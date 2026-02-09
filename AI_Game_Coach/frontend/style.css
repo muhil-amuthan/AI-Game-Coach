@@ -1,0 +1,152 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+/* ===== BACKGROUND ===== */
+body {
+    min-height: 100vh;
+    background: radial-gradient(circle at top, #0f172a, #020617);
+    color: #e5e7eb;
+}
+
+.bg-glow {
+    position: fixed;
+    inset: 0;
+    background:
+        radial-gradient(circle at 20% 20%, rgba(56,189,248,0.15), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(168,85,247,0.15), transparent 40%);
+    z-index: -1;
+}
+
+/* ===== HOME ===== */
+.home {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.home-card {
+    background: rgba(15,23,42,0.65);
+    backdrop-filter: blur(16px);
+    padding: 50px 70px;
+    border-radius: 22px;
+    text-align: center;
+    box-shadow: 0 0 60px rgba(56,189,248,.25);
+}
+
+.home-card h1 {
+    font-size: 48px;
+    color: #38bdf8;
+    text-shadow: 0 0 25px rgba(56,189,248,.8);
+}
+
+.home-card p {
+    margin: 15px 0 25px;
+    color: #94a3b8;
+}
+
+.icons {
+    font-size: 38px;
+    margin-bottom: 25px;
+}
+
+/* ===== DASHBOARD ===== */
+.top-bar {
+    padding: 25px 50px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.top-bar h1 {
+    color: #38bdf8;
+}
+
+.online {
+    color: #22c55e;
+    font-weight: bold;
+}
+
+/* ===== MAIN CARD ===== */
+.dashboard-card {
+    max-width: 1000px;
+    margin: auto;
+    padding: 35px;
+    background: rgba(15,23,42,0.7);
+    backdrop-filter: blur(18px);
+    border-radius: 24px;
+    box-shadow: 0 0 80px rgba(56,189,248,.25);
+}
+
+/* ===== FORM ===== */
+.section label {
+    display: block;
+    margin-bottom: 8px;
+    color: #38bdf8;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 16px;
+    margin: 20px 0;
+}
+
+input, select {
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    background: #020617;
+    color: white;
+    box-shadow: inset 0 0 10px rgba(0,0,0,.7);
+}
+
+input:focus, select:focus {
+    outline: 2px solid #38bdf8;
+}
+
+/* ===== BUTTON ===== */
+.neon-btn {
+    margin-top: 20px;
+    padding: 14px 40px;
+    border-radius: 40px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    background: linear-gradient(135deg, #2563eb, #38bdf8, #a855f7);
+    box-shadow: 0 0 30px rgba(56,189,248,.8);
+    transition: .3s;
+}
+
+.neon-btn.big {
+    width: 100%;
+    font-size: 16px;
+}
+
+.neon-btn:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 60px rgba(168,85,247,.9);
+}
+
+/* ===== OUTPUT ===== */
+.output {
+    margin-top: 35px;
+}
+
+.output h2 {
+    margin-bottom: 15px;
+    color: #facc15;
+}
+
+.output li {
+    list-style: none;
+    padding: 16px;
+    margin: 12px 0;
+    background: rgba(2,6,23,.85);
+    border-left: 5px solid #38bdf8;
+    border-radius: 14px;
+    box-shadow: 0 0 25px rgba(56,189,248,.4);
+}
