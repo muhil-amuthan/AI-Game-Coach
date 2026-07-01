@@ -2,23 +2,1224 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AI Game Coach</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Game Coach - Next-Gen Strategy Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-pink: #ff00ff;
+            --neon-green: #00ff88;
+            --neon-purple: #b829dd;
+            --neon-orange: #ff6b35;
+            --neon-yellow: #ffdd00;
+            --dark-bg: #0a0a0f;
+            --card-bg: #12121a;
+            --card-bg-2: #1a1a25;
+            --border-glow: rgba(0, 243, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--dark-bg);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(0, 243, 255, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 50% 10%, rgba(0, 255, 136, 0.03) 0%, transparent 50%);
+        }
+
+        .bg-animation::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                linear-gradient(rgba(0, 243, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            animation: gridMove 20s linear infinite;
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(40px, 40px); }
+        }
+
+        /* Floating Particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: var(--neon-cyan);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: floatParticle 15s infinite;
+        }
+
+        .particle:nth-child(1) { left: 10%; top: 20%; animation-delay: 0s; animation-duration: 12s; }
+        .particle:nth-child(2) { left: 30%; top: 60%; animation-delay: 2s; animation-duration: 18s; background: var(--neon-pink); }
+        .particle:nth-child(3) { left: 50%; top: 30%; animation-delay: 4s; animation-duration: 14s; background: var(--neon-green); }
+        .particle:nth-child(4) { left: 70%; top: 80%; animation-delay: 1s; animation-duration: 16s; background: var(--neon-purple); }
+        .particle:nth-child(5) { left: 90%; top: 40%; animation-delay: 3s; animation-duration: 20s; background: var(--neon-orange); }
+        .particle:nth-child(6) { left: 20%; top: 90%; animation-delay: 5s; animation-duration: 13s; background: var(--neon-yellow); }
+        .particle:nth-child(7) { left: 60%; top: 10%; animation-delay: 6s; animation-duration: 17s; background: var(--neon-cyan); }
+        .particle:nth-child(8) { left: 80%; top: 50%; animation-delay: 7s; animation-duration: 15s; background: var(--neon-pink); }
+
+        @keyframes floatParticle {
+            0%, 100% { transform: translateY(0) translateX(0); opacity: 0.3; }
+            25% { transform: translateY(-30px) translateX(10px); opacity: 0.6; }
+            50% { transform: translateY(-60px) translateX(-10px); opacity: 0.3; }
+            75% { transform: translateY(-30px) translateX(15px); opacity: 0.5; }
+        }
+
+        /* Navigation */
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 3rem;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-glow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            animation: slideDown 0.6s ease;
+        }
+
+        @keyframes slideDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.5));
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #888;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.05rem;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--neon-cyan);
+            text-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--neon-cyan);
+            transition: width 0.3s;
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            padding: 0.5rem 1.2rem;
+            border-radius: 20px;
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        .nav-cta:hover {
+            background: var(--neon-cyan);
+            color: var(--dark-bg);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 5rem 2rem 3rem;
+            position: relative;
+            min-height: 90vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1.2rem;
+            border-radius: 30px;
+            background: rgba(0, 243, 255, 0.1);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            color: var(--neon-cyan);
+            font-size: 0.85rem;
+            font-weight: 700;
+            margin-bottom: 2rem;
+            animation: fadeInUp 0.8s ease 0.2s both;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink), var(--neon-green));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: titleGlow 3s ease-in-out infinite alternate, fadeInUp 0.8s ease 0.4s both;
+            line-height: 1.1;
+        }
+
+        @keyframes titleGlow {
+            from { filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.4)); }
+            to { filter: drop-shadow(0 0 50px rgba(255, 0, 255, 0.4)); }
+        }
+
+        .hero-subtitle {
+            font-size: 1.6rem;
+            color: #888;
+            margin-bottom: 0.5rem;
+            animation: fadeInUp 0.8s ease 0.6s both;
+        }
+
+        .hero-desc {
+            font-size: 1.1rem;
+            color: #666;
+            max-width: 500px;
+            margin-bottom: 2.5rem;
+            animation: fadeInUp 0.8s ease 0.7s both;
+            line-height: 1.6;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Game Icons */
+        .game-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin: 2rem 0 2.5rem;
+            animation: fadeInUp 0.8s ease 0.8s both;
+        }
+
+        .game-icon {
+            font-size: 2.8rem;
+            cursor: pointer;
+            transition: all 0.4s;
+            filter: drop-shadow(0 0 8px rgba(0, 243, 255, 0.2));
+            animation: float 3s ease-in-out infinite;
+            padding: 0.5rem;
+        }
+
+        .game-icon:nth-child(1) { animation-delay: 0s; }
+        .game-icon:nth-child(2) { animation-delay: 0.4s; }
+        .game-icon:nth-child(3) { animation-delay: 0.8s; }
+        .game-icon:nth-child(4) { animation-delay: 1.2s; }
+        .game-icon:nth-child(5) { animation-delay: 1.6s; }
+        .game-icon:nth-child(6) { animation-delay: 2s; }
+        .game-icon:nth-child(7) { animation-delay: 2.4s; }
+        .game-icon:nth-child(8) { animation-delay: 2.8s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
+
+        .game-icon:hover {
+            transform: scale(1.3) translateY(-5px);
+            filter: drop-shadow(0 0 25px var(--neon-cyan));
+        }
+
+        /* CTA Buttons */
+        .cta-group {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            animation: fadeInUp 0.8s ease 1s both;
+        }
+
+        .neon-btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            background: transparent;
+            border: 2px solid var(--neon-cyan);
+            border-radius: 50px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.05);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .neon-btn:hover {
+            background: var(--neon-cyan);
+            color: var(--dark-bg);
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.6), inset 0 0 30px rgba(0, 243, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .neon-btn.pink {
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.2), inset 0 0 20px rgba(255, 0, 255, 0.05);
+        }
+
+        .neon-btn.pink:hover {
+            background: var(--neon-pink);
+            color: var(--dark-bg);
+            box-shadow: 0 0 40px rgba(255, 0, 255, 0.6);
+        }
+
+        .neon-btn.green {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2), inset 0 0 20px rgba(0, 255, 136, 0.05);
+        }
+
+        .neon-btn.green:hover {
+            background: var(--neon-green);
+            color: var(--dark-bg);
+            box-shadow: 0 0 40px rgba(0, 255, 136, 0.6);
+        }
+
+        /* Stats Bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            padding: 2.5rem 2rem;
+            background: rgba(18, 18, 26, 0.8);
+            border-top: 1px solid var(--border-glow);
+            border-bottom: 1px solid var(--border-glow);
+            flex-wrap: wrap;
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-item {
+            text-align: center;
+            animation: fadeInUp 0.6s ease both;
+        }
+
+        .stat-item:nth-child(1) { animation-delay: 0.1s; }
+        .stat-item:nth-child(2) { animation-delay: 0.2s; }
+        .stat-item:nth-child(3) { animation-delay: 0.3s; }
+        .stat-item:nth-child(4) { animation-delay: 0.4s; }
+        .stat-item:nth-child(5) { animation-delay: 0.5s; }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-top: 0.3rem;
+        }
+
+        /* Section Styling */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--neon-cyan);
+            text-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-pink));
+            margin: 0.8rem auto 0;
+            border-radius: 2px;
+        }
+
+        /* Game Cards */
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .game-card {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .game-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.08), transparent);
+            transition: left 0.6s;
+        }
+
+        .game-card:hover::before {
+            left: 100%;
+        }
+
+        .game-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 15px 40px rgba(0, 243, 255, 0.15);
+        }
+
+        .game-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            transition: transform 0.3s;
+        }
+
+        .game-card:hover .icon {
+            transform: scale(1.2);
+        }
+
+        .game-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .game-card p {
+            color: #888;
+            font-size: 0.9rem;
+            margin-bottom: 1.2rem;
+            line-height: 1.5;
+        }
+
+        .game-card .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            justify-content: center;
+        }
+
+        .tag {
+            padding: 0.25rem 0.7rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-cyan);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            transition: all 0.3s;
+        }
+
+        .game-card:hover .tag {
+            background: rgba(0, 243, 255, 0.2);
+        }
+
+        /* Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .feature-card {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.05), rgba(255, 0, 255, 0.05));
+            border: 1px solid rgba(0, 243, 255, 0.15);
+            border-radius: 16px;
+            padding: 2rem;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 243, 255, 0.1), transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .feature-card:hover::after {
+            opacity: 1;
+        }
+
+        .feature-card:hover {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        .feature-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-cyan);
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        .feature-card p {
+            color: #aaa;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        /* How It Works */
+        .steps-container {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .step {
+            text-align: center;
+            max-width: 250px;
+            position: relative;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 900;
+            color: var(--dark-bg);
+            margin: 0 auto 1rem;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .step h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .step p {
+            color: #888;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .step-connector {
+            position: absolute;
+            top: 30px;
+            left: calc(100% + 1rem);
+            width: calc(100% + 2rem);
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-cyan), transparent);
+            display: none;
+        }
+
+        @media (min-width: 900px) {
+            .step:not(:last-child) .step-connector {
+                display: block;
+            }
+        }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .testimonial {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .testimonial:hover {
+            border-color: var(--neon-purple);
+            box-shadow: 0 0 25px rgba(184, 41, 221, 0.1);
+        }
+
+        .testimonial-stars {
+            color: var(--neon-yellow);
+            font-size: 1.1rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .testimonial-text {
+            color: #aaa;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .testimonial-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .testimonial-name {
+            font-weight: 700;
+            color: #fff;
+            font-size: 0.9rem;
+        }
+
+        .testimonial-role {
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        /* CTA Banner */
+        .cta-banner {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.1), rgba(255, 0, 255, 0.1));
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            margin: 2rem auto;
+            max-width: 900px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(0, 243, 255, 0.05), transparent 60%);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .cta-banner h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta-banner p {
+            color: #aaa;
+            margin-bottom: 1.5rem;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Footer */
+        footer {
+            background: rgba(10, 10, 15, 0.95);
+            border-top: 1px solid var(--border-glow);
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h4 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-cyan);
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .footer-section a {
+            display: block;
+            color: #666;
+            text-decoration: none;
+            padding: 0.3rem 0;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .footer-section a:hover {
+            color: var(--neon-cyan);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 0.8rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 243, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.3s;
+            color: #888;
+        }
+
+        .social-links a:hover {
+            background: var(--neon-cyan);
+            border-color: var(--neon-cyan);
+            color: var(--dark-bg);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            color: #444;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 0.85rem;
+        }
+
+        .copyright a {
+            color: #555;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .copyright a:hover {
+            color: var(--neon-cyan);
+        }
+
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s ease;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--dark-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-pink); }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.8rem; }
+            .hero-subtitle { font-size: 1.2rem; }
+            .nav-links { display: none; }
+            .navbar { padding: 1rem; }
+            .stats-bar { gap: 1.5rem; }
+            .section { padding: 3rem 1rem; }
+            .cta-banner h2 { font-size: 1.5rem; }
+        }
+    </style>
+<base target="_blank">
 </head>
 <body>
-
-    <div class="home-card">
-        <h1>AI GAME COACH</h1>
-        <p>Next-Gen AI Strategy Assistant for Gamers</p>
-
-        <div style="font-size:40px;margin:20px 0;">
-            ♟ 🎯 🎲 🃏 🐍
-        </div>
-
-        <a href="dashboard.html">
-            <button class="neon-btn">START COACHING</button>
-        </a>
+    <div class="bg-animation"></div>
+    <div class="particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
     </div>
 
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">🎮 AI COACH</div>
+        <ul class="nav-links">
+            <li><a href="#games">Games</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#how">How It Works</a></li>
+            <li><a href="#testimonials">Reviews</a></li>
+        </ul>
+        <a href="dashboard.html" class="nav-cta">DASHBOARD →</a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-badge">✨ NEW v2.0 — 4 AI PERSONALITIES</div>
+        <h1>AI GAME COACH</h1>
+        <p class="hero-subtitle">Next-Gen AI Strategy Assistant for Gamers</p>
+        <p class="hero-desc">Upload your stats, get instant AI-powered feedback. Choose your coach personality — from encouraging mentor to brutal roaster.</p>
+
+        <div class="game-icons">
+            <span class="game-icon" title="Chess">♟️</span>
+            <span class="game-icon" title="Carrom">🎯</span>
+            <span class="game-icon" title="Ludo">🎲</span>
+            <span class="game-icon" title="UNO">🃏</span>
+            <span class="game-icon" title="Snake & Ladder">🐍</span>
+            <span class="game-icon" title="FPS">🔫</span>
+            <span class="game-icon" title="MOBA">⚔️</span>
+            <span class="game-icon" title="Racing">🏎️</span>
+        </div>
+
+        <div class="cta-group">
+            <a href="dashboard.html" class="neon-btn">🚀 Start Coaching</a>
+            <button class="neon-btn pink" onclick="showDemo()">▶ Try Demo</button>
+            <button class="neon-btn green" onclick="showFeatures()">✨ See Features</button>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value" id="counter1">0</div>
+            <div class="stat-label">Active Players</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">5</div>
+            <div class="stat-label">Game Categories</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value" id="counter2">0</div>
+            <div class="stat-label">Matches Analyzed</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">98%</div>
+            <div class="stat-label">Accuracy Rate</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">4</div>
+            <div class="stat-label">AI Personalities</div>
+        </div>
+    </div>
+
+    <!-- Supported Games -->
+    <section class="section" id="games">
+        <h2 class="section-title reveal">🎮 SUPPORTED GAMES</h2>
+        <div class="game-grid">
+            <div class="game-card reveal" onclick="goToGame('chess')">
+                <div class="icon">♟️</div>
+                <h3>Chess</h3>
+                <p>Master openings, tactics, and endgames with deep AI analysis</p>
+                <div class="tags">
+                    <span class="tag">Strategy</span>
+                    <span class="tag">1v1</span>
+                </div>
+            </div>
+            <div class="game-card reveal" onclick="goToGame('carrom')">
+                <div class="icon">🎯</div>
+                <h3>Carrom</h3>
+                <p>Precision striker control and bank shot mastery</p>
+                <div class="tags">
+                    <span class="tag">Precision</span>
+                    <span class="tag">Physics</span>
+                </div>
+            </div>
+            <div class="game-card reveal" onclick="goToGame('ludo')">
+                <div class="icon">🎲</div>
+                <h3>Ludo</h3>
+                <p>Token spread strategy and safe zone prioritization</p>
+                <div class="tags">
+                    <span class="tag">Dice</span>
+                    <span class="tag">Race</span>
+                </div>
+            </div>
+            <div class="game-card reveal" onclick="goToGame('uno')">
+                <div class="icon">🃏</div>
+                <h3>UNO</h3>
+                <p>Card counting and wild card timing strategies</p>
+                <div class="tags">
+                    <span class="tag">Cards</span>
+                    <span class="tag">Bluff</span>
+                </div>
+            </div>
+            <div class="game-card reveal" onclick="goToGame('snake_ladder')">
+                <div class="icon">🐍</div>
+                <h3>Snake & Ladder</h3>
+                <p>Ladder hunting and snake avoidance probability</p>
+                <div class="tags">
+                    <span class="tag">Luck</span>
+                    <span class="tag">Probability</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- AI Features -->
+    <section class="section" id="features">
+        <h2 class="section-title reveal">🤖 AI POWERED FEATURES</h2>
+        <div class="features-grid">
+            <div class="feature-card reveal">
+                <span class="feature-icon">📊</span>
+                <h3>Smart Analysis</h3>
+                <p>Upload your match stats and get instant breakdowns of win rate, accuracy, blunders, and risk management with actionable insights.</p>
+            </div>
+            <div class="feature-card reveal">
+                <span class="feature-icon">🎭</span>
+                <h3>4 AI Personalities</h3>
+                <p>Choose your coach: 📊 Analyst (data-driven), 💪 Coach (encouraging), 🔥 Roaster (savage), or 🧘 Zen (philosophical).</p>
+            </div>
+            <div class="feature-card reveal">
+                <span class="feature-icon">🎯</span>
+                <h3>Game-Specific Tips</h3>
+                <p>Get tailored advice for each game. 5 unique tips per game covering openings, strategies, and common mistakes.</p>
+            </div>
+            <div class="feature-card reveal">
+                <span class="feature-icon">📈</span>
+                <h3>Skill Score</h3>
+                <p>Receive a 0-100 skill score based on win rate, accuracy, and endgame strength. Track your improvement over time.</p>
+            </div>
+            <div class="feature-card reveal">
+                <span class="feature-icon">💬</span>
+                <h3>Natural Feedback</h3>
+                <p>AI generates 6 personalized feedback points per analysis — from win rate breakdowns to game-specific strategy tips.</p>
+            </div>
+            <div class="feature-card reveal">
+                <span class="feature-icon">⚡</span>
+                <h3>Instant Results</h3>
+                <p>No waiting. Get your AI coach feedback in under a second. Fast, accurate, and always available 24/7.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="section" id="how">
+        <h2 class="section-title reveal">⚡ HOW IT WORKS</h2>
+        <div class="steps-container">
+            <div class="step reveal">
+                <div class="step-number">1</div>
+                <div class="step-connector"></div>
+                <h3>Select Your Game</h3>
+                <p>Choose from Chess, Carrom, Ludo, UNO, or Snake & Ladder</p>
+            </div>
+            <div class="step reveal">
+                <div class="step-number">2</div>
+                <div class="step-connector"></div>
+                <h3>Enter Stats</h3>
+                <p>Input matches, wins, blunders, safe moves, and risky moves</p>
+            </div>
+            <div class="step reveal">
+                <div class="step-number">3</div>
+                <div class="step-connector"></div>
+                <h3>Pick Personality</h3>
+                <p>Analyst, Coach, Roaster, or Zen — your choice of feedback style</p>
+            </div>
+            <div class="step reveal">
+                <div class="step-number">4</div>
+                <h3>Get Feedback</h3>
+                <p>Receive 6 personalized AI insights with skill score and tips</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="section" id="testimonials">
+        <h2 class="section-title reveal">💬 PLAYER REVIEWS</h2>
+        <div class="testimonials-grid">
+            <div class="testimonial reveal">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"The Roaster mode is hilarious! It called me out for my blunders while actually giving solid advice. Best coaching app I've used."</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">AK</div>
+                    <div>
+                        <div class="testimonial-name">Alex K.</div>
+                        <div class="testimonial-role">Chess Player • 1800 ELO</div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial reveal">
+                <div class="testimonial-stars">★★★★★</div>
+                <p class="testimonial-text">"Went from 40% to 65% win rate in Ludo after using the AI tips for just 2 weeks. The safe zone strategy changed everything."</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">MP</div>
+                    <div>
+                        <div class="testimonial-name">Maria P.</div>
+                        <div class="testimonial-role">Ludo Enthusiast</div>
+                    </div>
+                </div>
+            </div>
+            <div class="testimonial reveal">
+                <div class="testimonial-stars">★★★★☆</div>
+                <p class="testimonial-text">"Love the Zen mode for calm, thoughtful feedback. The skill radar and progress tracking keep me motivated to improve daily."</p>
+                <div class="testimonial-author">
+                    <div class="testimonial-avatar">RJ</div>
+                    <div>
+                        <div class="testimonial-name">Raj J.</div>
+                        <div class="testimonial-role">Carrom Champion</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Banner -->
+    <section class="section">
+        <div class="cta-banner reveal">
+            <h2>Ready to Level Up?</h2>
+            <p>Join thousands of players using AI Game Coach to improve their strategy, win more games, and have fun doing it.</p>
+            <div class="cta-group" style="justify-content: center;">
+                <a href="dashboard.html" class="neon-btn">🚀 Start Free</a>
+                <button class="neon-btn pink" onclick="showDemo()">▶ Watch Demo</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Platform</h4>
+                <a href="dashboard.html">Dashboard</a>
+                <a href="#">Mobile App</a>
+                <a href="#">Browser Extension</a>
+                <a href="#">API Access</a>
+            </div>
+            <div class="footer-section">
+                <h4>Resources</h4>
+                <a href="#">Blog</a>
+                <a href="#">Game Guides</a>
+                <a href="#">Strategy Database</a>
+                <a href="#">Community</a>
+            </div>
+            <div class="footer-section">
+                <h4>Support</h4>
+                <a href="#">Help Center</a>
+                <a href="#">Contact Us</a>
+                <a href="#">Feedback</a>
+                <a href="#">Bug Report</a>
+            </div>
+            <div class="footer-section">
+                <h4>Connect</h4>
+                <div class="social-links">
+                    <a href="#" title="Twitter">𝕏</a>
+                    <a href="#" title="Discord">💬</a>
+                    <a href="#" title="GitHub">⚙</a>
+                    <a href="#" title="YouTube">▶</a>
+                </div>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>© 2026 AI Game Coach. All rights reserved. | <a href="#">Privacy</a> | <a href="#">Terms</a></p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scroll for nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+
+        // Scroll reveal animation
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+        // Animated counters
+        function animateCounter(id, target, duration = 2000) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            let start = 0;
+            const increment = target / (duration / 16);
+            function update() {
+                start += increment;
+                if (start < target) {
+                    el.textContent = Math.floor(start).toLocaleString() + '+';
+                    requestAnimationFrame(update);
+                } else {
+                    el.textContent = target.toLocaleString() + '+';
+                }
+            }
+            update();
+        }
+
+        // Start counters when stats bar is visible
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounter('counter1', 50000);
+                    animateCounter('counter2', 2400000);
+                    statsObserver.disconnect();
+                }
+            });
+        }, { threshold: 0.5 });
+
+        statsObserver.observe(document.querySelector('.stats-bar'));
+
+        // Game selection handler
+        function goToGame(game) {
+            window.location.href = 'dashboard.html?game=' + game;
+        }
+
+        // Demo popup
+        function showDemo() {
+            alert('🎮 DEMO MODE\n\nTry entering these sample stats:\n• Game: Chess\n• Matches: 50\n• Wins: 30\n• Blunders: 15\n• Endgame Losses: 8\n• Safe Moves: 120\n• Risky Moves: 25\n\nThen pick 🔥 Roaster mode for maximum entertainment!');
+        }
+
+        // Features scroll
+        function showFeatures() {
+            document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Typing effect for subtitle
+        const subtitle = document.querySelector('.hero-subtitle');
+        const text = subtitle.textContent;
+        subtitle.textContent = '';
+        let i = 0;
+        function typeWriter() {
+            if (i < text.length) {
+                subtitle.textContent += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 40);
+            }
+        }
+        setTimeout(typeWriter, 600);
+    </script>
 </body>
 </html>
