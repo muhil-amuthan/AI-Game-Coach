@@ -4,91 +4,825 @@
     <meta charset="UTF-8">
     <title>AI Game Coach Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-</head>
-
-<body>
-
-<div class="dashboard-card">
-
-    <h1>🎮 AI Game Coach Dashboard</h1>
-
-    <!-- GAME SELECTION -->
-    <label for="game">Select Game</label>
-    <select id="game">
-        <option value="chess">♟ Chess</option>
-        <option value="carrom">🎯 Carrom</option>
-        <option value="ludo">🎲 Ludo</option>
-        <option value="uno">🃏 UNO</option>
-        <option value="snake_ladder">🐍 Snake & Ladder</option>
-    </select>
-
-    <!-- INPUT GRID -->
-    <div class="grid">
-        <input id="matches" type="number" placeholder="Matches Played">
-        <input id="wins" type="number" placeholder="Wins">
-        <input id="blunders" type="number" placeholder="Mistakes / Fouls / Blunders">
-        <input id="endgame_losses" type="number" placeholder="Endgame Losses / Snake Hits">
-        <input id="safe_moves" type="number" placeholder="Safe Moves / Wild Cards">
-        <input id="risky_moves" type="number" placeholder="Risky Moves / Penalties">
-    </div>
-
-    <!-- BUTTON -->
-    <button class="neon-btn" onclick="analyze()">GET AI STRATEGY</button>
-
-    <!-- OUTPUT -->
-    <div class="output">
-        <h2>🧠 AI Coach Feedback</h2>
-        <ul id="result"></ul>
-    </div>
-
-</div>
-
-<script>
-function analyze() {
-
-    const payload = {
-        game: document.getElementById("game").value,
-        matches: parseInt(document.getElementById("matches").value || 0),
-        wins: parseInt(document.getElementById("wins").value || 0),
-        blunders: parseInt(document.getElementById("blunders").value || 0),
-        endgame_losses: parseInt(document.getElementById("endgame_losses").value || 0),
-        safe_moves: parseInt(document.getElementById("safe_moves").value || 0),
-        risky_moves: parseInt(document.getElementById("risky_moves").value || 0),
-        penalty_cards: parseInt(document.getElementById("risky_moves").value || 0),
-        wild_card_usage: parseInt(document.getElementById("safe_moves").value || 0),
-        snake_hits: parseInt(document.getElementById("endgame_losses").value || 0)
-    };
-
-    fetch("https://ai-game-coach-backend.onrender.com/analyze", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-    })
-    .then(response => response.json())
-    .then(data => {
-        const result = document.getElementById("result");
-        result.innerHTML = "";
-
-        if (!data.ai_coach_feedback || data.ai_coach_feedback.length === 0) {
-            result.innerHTML = "<li>No feedback received.</li>";
-            return;
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --neon-cyan: #00f3ff;
+            --neon-pink: #ff00ff;
+            --neon-green: #00ff88;
+            --neon-purple: #b829dd;
+            --neon-orange: #ff6b35;
+            --neon-yellow: #ffdd00;
+            --dark-bg: #0a0a0f;
+            --card-bg: #12121a;
+            --card-bg-2: #1a1a25;
+            --border-glow: rgba(0, 243, 255, 0.3);
         }
 
-        data.ai_coach_feedback.forEach(feedback => {
-            const li = document.createElement("li");
-            li.textContent = feedback;
-            result.appendChild(li);
-        });
-    })
-    .catch(error => {
-        alert("Backend not responding. Please wait 30 seconds and try again.");
-        console.error(error);
-    });
-}
-</script>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--dark-bg);
+            color: #e0e0e0;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Background */
+        .bg-animation {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background:
+                radial-gradient(circle at 20% 50%, rgba(0, 243, 255, 0.04) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.04) 0%, transparent 50%);
+        }
+        .bg-animation::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background-image:
+                linear-gradient(rgba(0, 243, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+
+        /* Navbar */
+        .navbar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(10, 10, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-glow);
+            position: sticky; top: 0; z-index: 1000;
+        }
+        .logo {
+            font-family: 'Orbitron', sans-serif; font-size: 1.3rem; font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            cursor: pointer; text-decoration: none;
+        }
+        .nav-links { display: flex; gap: 1.5rem; list-style: none; }
+        .nav-links a { color: #888; text-decoration: none; font-weight: 500; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--neon-cyan); }
+        .user-badge {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.4rem 1rem; border-radius: 20px;
+            background: rgba(0, 243, 255, 0.1); border: 1px solid rgba(0, 243, 255, 0.3);
+            font-family: 'Orbitron', sans-serif; font-size: 0.85rem;
+        }
+
+        /* Main Layout */
+        .main-container {
+            max-width: 1400px; margin: 0 auto; padding: 2rem;
+            display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;
+        }
+        @media (max-width: 900px) { .main-container { grid-template-columns: 1fr; } }
+
+        /* Cards */
+        .card {
+            background: var(--card-bg); border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px; padding: 1.5rem; transition: all 0.3s;
+        }
+        .card:hover { border-color: var(--border-glow); box-shadow: 0 0 30px rgba(0, 243, 255, 0.1); }
+        .card-title {
+            font-family: 'Orbitron', sans-serif; font-size: 1.1rem;
+            color: var(--neon-cyan); margin-bottom: 1rem;
+            display: flex; align-items: center; gap: 0.5rem;
+        }
+        .full-width { grid-column: 1 / -1; }
+
+        /* Game Selector */
+        .game-selector {
+            display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+        }
+        .game-selector label {
+            font-family: 'Orbitron', sans-serif; color: var(--neon-cyan); font-size: 1rem;
+        }
+        select {
+            padding: 0.8rem 1.5rem; font-size: 1rem; font-family: 'Rajdhani', sans-serif;
+            background: var(--card-bg-2); color: #fff;
+            border: 1px solid rgba(0, 243, 255, 0.3); border-radius: 10px;
+            cursor: pointer; outline: none; transition: all 0.3s; min-width: 200px;
+        }
+        select:focus { border-color: var(--neon-cyan); box-shadow: 0 0 15px rgba(0, 243, 255, 0.2); }
+        option { background: var(--card-bg-2); color: #fff; }
+
+        /* Personality Selector */
+        .personality-selector { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .personality-btn {
+            padding: 0.5rem 1rem; border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: var(--card-bg-2); color: #888; cursor: pointer;
+            font-family: 'Rajdhani', sans-serif; font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        .personality-btn.active {
+            border-color: var(--neon-cyan); color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.2);
+        }
+        .personality-btn:hover { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+
+        /* Input Grid */
+        .input-grid {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;
+        }
+        .input-group { position: relative; }
+        .input-group label {
+            display: block; font-size: 0.85rem; color: #888;
+            margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 1px;
+        }
+        input[type="number"] {
+            width: 100%; padding: 0.8rem 1rem; font-size: 1rem;
+            font-family: 'Rajdhani', sans-serif; background: var(--card-bg-2);
+            color: #fff; border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px; outline: none; transition: all 0.3s;
+        }
+        input[type="number"]:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.15);
+        }
+        input::placeholder { color: #555; }
+
+        /* Neon Buttons */
+        .neon-btn {
+            padding: 1rem 2.5rem; font-size: 1.1rem; font-family: 'Orbitron', sans-serif;
+            font-weight: 700; color: var(--neon-cyan); background: transparent;
+            border: 2px solid var(--neon-cyan); border-radius: 50px; cursor: pointer;
+            position: relative; overflow: hidden; transition: all 0.3s;
+            text-transform: uppercase; letter-spacing: 2px;
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.05);
+            margin-top: 1rem; width: 100%;
+        }
+        .neon-btn:hover {
+            background: var(--neon-cyan); color: var(--dark-bg);
+            box-shadow: 0 0 40px rgba(0, 243, 255, 0.5); transform: translateY(-2px);
+        }
+        .neon-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .neon-btn.pink {
+            border-color: var(--neon-pink); color: var(--neon-pink);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.2);
+        }
+        .neon-btn.pink:hover { background: var(--neon-pink); color: var(--dark-bg); }
+        .neon-btn.green {
+            border-color: var(--neon-green); color: var(--neon-green);
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2);
+        }
+        .neon-btn.green:hover { background: var(--neon-green); color: var(--dark-bg); }
+
+        /* Stats */
+        .stats-row {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;
+        }
+        .stat-box {
+            background: var(--card-bg-2); border-radius: 12px; padding: 1rem;
+            text-align: center; border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s;
+        }
+        .stat-box:hover { border-color: var(--neon-cyan); transform: translateY(-3px); }
+        .stat-box .value {
+            font-family: 'Orbitron', sans-serif; font-size: 1.8rem; font-weight: 700; color: var(--neon-cyan);
+        }
+        .stat-box .label { font-size: 0.8rem; color: #666; text-transform: uppercase; letter-spacing: 1px; margin-top: 0.3rem; }
+
+        /* Progress Bars */
+        .progress-container { margin: 0.8rem 0; }
+        .progress-label { display: flex; justify-content: space-between; font-size: 0.9rem; margin-bottom: 0.3rem; }
+        .progress-label span:first-child { color: #aaa; }
+        .progress-label span:last-child { font-family: 'Orbitron', sans-serif; color: var(--neon-cyan); }
+        .progress-bar { height: 8px; background: rgba(255, 255, 255, 0.05); border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; border-radius: 4px; transition: width 1s ease; position: relative; }
+        .progress-fill::after {
+            content: ''; position: absolute; top: 0; right: 0;
+            width: 20px; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3));
+        }
+        .fill-cyan { background: linear-gradient(90deg, var(--neon-cyan), #00a8b5); }
+        .fill-pink { background: linear-gradient(90deg, var(--neon-pink), #b800b8); }
+        .fill-green { background: linear-gradient(90deg, var(--neon-green), #00b35c); }
+        .fill-orange { background: linear-gradient(90deg, var(--neon-orange), #cc5529); }
+        .fill-purple { background: linear-gradient(90deg, var(--neon-purple), #8a1fa8); }
+
+        /* Feedback */
+        .feedback-list { list-style: none; }
+        .feedback-list li {
+            padding: 0.8rem 1rem; margin-bottom: 0.5rem; background: var(--card-bg-2);
+            border-radius: 10px; border-left: 3px solid var(--neon-cyan);
+            animation: slideIn 0.4s ease forwards; opacity: 0; transform: translateX(-20px);
+            font-size: 0.95rem; line-height: 1.5;
+        }
+        .feedback-list li:nth-child(1) { animation-delay: 0.1s; }
+        .feedback-list li:nth-child(2) { animation-delay: 0.2s; }
+        .feedback-list li:nth-child(3) { animation-delay: 0.3s; }
+        .feedback-list li:nth-child(4) { animation-delay: 0.4s; }
+        .feedback-list li:nth-child(5) { animation-delay: 0.5s; }
+        .feedback-list li:nth-child(6) { animation-delay: 0.6s; }
+        @keyframes slideIn { to { opacity: 1; transform: translateX(0); } }
+        .feedback-list li.warning { border-left-color: var(--neon-orange); }
+        .feedback-list li.success { border-left-color: var(--neon-green); }
+        .feedback-list li.danger { border-left-color: var(--neon-pink); }
+        .feedback-list li.info { border-left-color: var(--neon-purple); }
+
+        /* Chart */
+        .chart-container { position: relative; height: 260px; width: 100%; }
+
+        /* Tips */
+        .tips-container { display: flex; flex-direction: column; gap: 0.8rem; }
+        .tip-card {
+            background: var(--card-bg-2); border-radius: 10px; padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s; cursor: pointer;
+        }
+        .tip-card:hover { border-color: var(--neon-green); background: rgba(0, 255, 136, 0.05); }
+        .tip-card .tip-title { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; color: var(--neon-green); margin-bottom: 0.3rem; }
+        .tip-card .tip-text { font-size: 0.9rem; color: #aaa; }
+
+        /* Achievements */
+        .achievements-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); gap: 0.8rem; }
+        .achievement {
+            aspect-ratio: 1; background: var(--card-bg-2); border-radius: 12px;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 1px solid rgba(255, 255, 255, 0.05); transition: all 0.3s;
+            cursor: pointer; position: relative;
+        }
+        .achievement:hover { border-color: var(--neon-yellow); transform: scale(1.05); }
+        .achievement.locked { opacity: 0.4; filter: grayscale(1); }
+        .achievement .icon { font-size: 1.8rem; margin-bottom: 0.3rem; }
+        .achievement .name { font-size: 0.65rem; text-align: center; color: #888; line-height: 1.2; }
+        .achievement .tooltip {
+            position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%);
+            background: var(--card-bg-2); border: 1px solid var(--neon-cyan);
+            padding: 0.5rem; border-radius: 8px; font-size: 0.75rem;
+            white-space: nowrap; opacity: 0; pointer-events: none; transition: opacity 0.3s; z-index: 10;
+        }
+        .achievement:hover .tooltip { opacity: 1; }
+
+        /* History */
+        .history-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0.6rem 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); font-size: 0.9rem;
+        }
+        .history-item:last-child { border-bottom: none; }
+        .history-game { color: var(--neon-cyan); font-weight: 700; }
+        .history-score { font-family: 'Orbitron', sans-serif; color: var(--neon-green); }
+        .history-date { color: #555; font-size: 0.8rem; }
+
+        /* Loading */
+        .loading-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(10, 10, 15, 0.9); z-index: 2000;
+            justify-content: center; align-items: center; flex-direction: column;
+        }
+        .loading-overlay.active { display: flex; }
+        .loader {
+            width: 60px; height: 60px; border: 3px solid rgba(0, 243, 255, 0.2);
+            border-top-color: var(--neon-cyan); border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text {
+            margin-top: 1rem; font-family: 'Orbitron', sans-serif;
+            color: var(--neon-cyan); animation: pulse 1.5s ease infinite;
+        }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--dark-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--neon-pink); }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .stats-row { grid-template-columns: repeat(3, 1fr); }
+            .navbar { padding: 1rem; }
+            .nav-links { display: none; }
+        }
+    </style>
+<base target="_blank">
+</head>
+<body>
+    <div class="bg-animation"></div>
+
+    <!-- Loading Overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader"></div>
+        <div class="loading-text">AI ANALYZING...</div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">🎮 AI COACH</a>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="#" onclick="alert('History panel below!')">History</a></li>
+        </ul>
+        <div class="user-badge"><span>⚡</span><span>Level 12</span></div>
+    </nav>
+
+    <div class="main-container">
+        <!-- Game Selector + Personality -->
+        <div class="card full-width game-selector">
+            <label for="game">🎯 SELECT GAME</label>
+            <select id="game" onchange="updateGameTips()">
+                <option value="chess">♟ Chess</option>
+                <option value="carrom">🎯 Carrom</option>
+                <option value="ludo">🎲 Ludo</option>
+                <option value="uno">🃏 UNO</option>
+                <option value="snake_ladder">🐍 Snake & Ladder</option>
+            </select>
+            <div class="personality-selector">
+                <button class="personality-btn active" onclick="setPersonality('analyst', this)">📊 Analyst</button>
+                <button class="personality-btn" onclick="setPersonality('coach', this)">💪 Coach</button>
+                <button class="personality-btn" onclick="setPersonality('roast', this)">🔥 Roaster</button>
+                <button class="personality-btn" onclick="setPersonality('zen', this)">🧘 Zen</button>
+            </div>
+        </div>
+
+        <!-- Input Panel -->
+        <div class="card">
+            <div class="card-title">📊 MATCH DATA</div>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label>Matches Played</label>
+                    <input id="matches" type="number" placeholder="e.g. 50" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Wins</label>
+                    <input id="wins" type="number" placeholder="e.g. 30" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Mistakes / Blunders</label>
+                    <input id="blunders" type="number" placeholder="e.g. 15" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Endgame Losses / Snake Hits</label>
+                    <input id="endgame_losses" type="number" placeholder="e.g. 8" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Safe Moves / Wild Cards</label>
+                    <input id="safe_moves" type="number" placeholder="e.g. 120" min="0">
+                </div>
+                <div class="input-group">
+                    <label>Risky Moves / Penalties</label>
+                    <input id="risky_moves" type="number" placeholder="e.g. 25" min="0">
+                </div>
+            </div>
+            <button class="neon-btn" id="analyzeBtn" onclick="analyze()">🚀 GET AI STRATEGY</button>
+            <button class="neon-btn pink" style="margin-top: 0.5rem;" onclick="clearAll()">🗑️ CLEAR DATA</button>
+        </div>
+
+        <!-- Live Stats -->
+        <div class="card">
+            <div class="card-title">📈 LIVE STATS</div>
+            <div class="stats-row">
+                <div class="stat-box">
+                    <div class="value" id="winRate">--</div>
+                    <div class="label">Win Rate</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value" id="avgBlunders">--</div>
+                    <div class="label">Avg Blunders</div>
+                </div>
+                <div class="stat-box">
+                    <div class="value" id="skillScore">--</div>
+                    <div class="label">Skill Score</div>
+                </div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-label"><span>Win Rate</span><span id="winRateText">0%</span></div>
+                <div class="progress-bar"><div class="progress-fill fill-cyan" id="winRateBar" style="width: 0%"></div></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-label"><span>Accuracy</span><span id="accuracyText">0%</span></div>
+                <div class="progress-bar"><div class="progress-fill fill-green" id="accuracyBar" style="width: 0%"></div></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-label"><span>Risk Management</span><span id="riskText">0%</span></div>
+                <div class="progress-bar"><div class="progress-fill fill-orange" id="riskBar" style="width: 0%"></div></div>
+            </div>
+            <div class="progress-container">
+                <div class="progress-label"><span>Endgame Strength</span><span id="endgameText">0%</span></div>
+                <div class="progress-bar"><div class="progress-fill fill-purple" id="endgameBar" style="width: 0%"></div></div>
+            </div>
+        </div>
+
+        <!-- Skill Radar -->
+        <div class="card">
+            <div class="card-title">🕸️ SKILL RADAR</div>
+            <div class="chart-container"><canvas id="radarChart"></canvas></div>
+        </div>
+
+        <!-- AI Feedback -->
+        <div class="card">
+            <div class="card-title">🧠 AI COACH FEEDBACK</div>
+            <ul class="feedback-list" id="result">
+                <li style="opacity: 1; transform: none; border-left-color: #555; color: #555;">
+                    Enter your match data and click "Get AI Strategy" to receive personalized coaching feedback.
+                </li>
+            </ul>
+        </div>
+
+        <!-- Game Tips -->
+        <div class="card">
+            <div class="card-title">💡 GAME-SPECIFIC TIPS</div>
+            <div class="tips-container" id="gameTips"></div>
+        </div>
+
+        <!-- Achievements -->
+        <div class="card">
+            <div class="card-title">🏆 ACHIEVEMENTS</div>
+            <div class="achievements-grid" id="achievements">
+                <div class="achievement" data-id="first_win">
+                    <div class="icon">🥇</div><div class="name">First Blood</div>
+                    <div class="tooltip">Win your first match</div>
+                </div>
+                <div class="achievement locked" data-id="win_streak">
+                    <div class="icon">🔥</div><div class="name">On Fire</div>
+                    <div class="tooltip">Win 5 matches in a row</div>
+                </div>
+                <div class="achievement locked" data-id="perfect_game">
+                    <div class="icon">💎</div><div class="name">Flawless</div>
+                    <div class="tooltip">Zero blunders in a match</div>
+                </div>
+                <div class="achievement locked" data-id="comeback">
+                    <div class="icon">⚡</div><div class="name">Comeback</div>
+                    <div class="tooltip">Win after being behind</div>
+                </div>
+                <div class="achievement locked" data-id="strategist">
+                    <div class="icon">🧠</div><div class="name">Strategist</div>
+                    <div class="tooltip">80%+ safe moves ratio</div>
+                </div>
+                <div class="achievement locked" data-id="veteran">
+                    <div class="icon">🎖️</div><div class="name">Veteran</div>
+                    <div class="tooltip">Play 100+ matches</div>
+                </div>
+                <div class="achievement locked" data-id="master">
+                    <div class="icon">👑</div><div class="name">Master</div>
+                    <div class="tooltip">70%+ win rate over 50 games</div>
+                </div>
+                <div class="achievement locked" data-id="risk_taker">
+                    <div class="icon">🎲</div><div class="name">Risk Taker</div>
+                    <div class="tooltip">More risky than safe moves</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Session History -->
+        <div class="card">
+            <div class="card-title">📜 SESSION HISTORY</div>
+            <div id="historyList">
+                <div style="color: #555; text-align: center; padding: 1rem;">No analyses yet. Start by entering your match data!</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // CONFIG
+        // ============================================
+        const BACKEND_URL = "https://ai-game-coach-backend.onrender.com";
+        let currentPersonality = 'analyst';
+        let radarChart = null;
+        let sessionHistory = [];
+
+        // ============================================
+        // GAME TIPS DATABASE
+        // ============================================
+        const gameTipsDB = {
+            chess: [
+                { title: "Opening Principles", text: "Control the center with pawns and develop knights/bishops early. Don't move the same piece twice." },
+                { title: "Tactical Awareness", text: "Always check for pins, forks, and skewers before making a move. Look for threats first." },
+                { title: "Endgame Technique", text: "In rook endgames, activate your king. In pawn endgames, the opposition is key." },
+                { title: "Time Management", text: "Spend 20% of your time on the first 10 moves. Save time for complex middlegame positions." }
+            ],
+            carrom: [
+                { title: "Striker Control", text: "Keep your striker within 5cm of the baseline center. Practice thumb shots for precision." },
+                { title: "Angle Mastery", text: "Use the diamond system for bank shots. Angle of incidence = angle of reflection." },
+                { title: "Break Strategy", text: "Aim for the second row coin on the break. This maximizes scatter and pocketing chances." },
+                { title: "Defense First", text: "If you can't pocket, position to block opponent's easy shots. Control the queen's position." }
+            ],
+            ludo: [
+                { title: "Token Spread", text: "Don't focus on one token. Spread your tokens to maximize dice utility and create multiple threats." },
+                { title: "Safe Zones", text: "Prioritize reaching safe zones (star squares). A token in a safe zone is worth more than a token near home." },
+                { title: "Block Building", text: "Stack two tokens on the same square to create a block. Opponents cannot pass your block." },
+                { title: "Kill Priority", text: "When deciding between advancing and killing, kill if it sends the opponent far back." }
+            ],
+            uno: [
+                { title: "Card Counting", text: "Track colors and numbers played. If a color hasn't appeared in 5 turns, someone is hoarding it." },
+                { title: "Wild Card Timing", text: "Save wild cards for emergencies. Use them when you have no matching color." },
+                { title: "Reverse Psychology", text: "Hold +2 and +4 cards until an opponent has 1-2 cards left. Surprise wins games." },
+                { title: "Color Strategy", text: "Call the color you have the most of after playing a wild card. Keep 2-3 cards of that color." }
+            ],
+            snake_ladder: [
+                { title: "Ladder Hunting", text: "Aim for squares before ladders (e.g., 3, 8, 20, 28). Expected value is much higher." },
+                { title: "Snake Avoidance", text: "Avoid squares just before snakes (e.g., 16, 46, 62). Risk increases dramatically." },
+                { title: "Probability Sense", text: "With 2 dice, 7 is the most likely roll. Position for 6, 7, or 8 to land on a ladder." },
+                { title: "Endgame Rush", text: "In the final 10 squares, exact rolls matter. Don't overshoot! Sometimes staying put is better." }
+            ]
+        };
+
+        // ============================================
+        // PERSONALITY
+        // ============================================
+        function setPersonality(p, btn) {
+            currentPersonality = p;
+            document.querySelectorAll('.personality-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        // ============================================
+        // RADAR CHART
+        // ============================================
+        function initRadarChart() {
+            const ctx = document.getElementById('radarChart').getContext('2d');
+            radarChart = new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['Win Rate', 'Accuracy', 'Risk Mgmt', 'Endgame', 'Consistency', 'Aggression'],
+                    datasets: [{
+                        label: 'Your Skills',
+                        data: [50, 50, 50, 50, 50, 50],
+                        backgroundColor: 'rgba(0, 243, 255, 0.2)',
+                        borderColor: 'rgba(0, 243, 255, 0.8)',
+                        pointBackgroundColor: '#00f3ff',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#00f3ff'
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            beginAtZero: true, max: 100, ticks: { display: false },
+                            grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                            pointLabels: { color: '#888', font: { family: 'Orbitron', size: 10 } }
+                        }
+                    },
+                    plugins: { legend: { display: false } }
+                }
+            });
+        }
+
+        // ============================================
+        // UPDATE GAME TIPS
+        // ============================================
+        function updateGameTips() {
+            const game = document.getElementById('game').value;
+            const container = document.getElementById('gameTips');
+            const tips = gameTipsDB[game] || gameTipsDB.chess;
+            container.innerHTML = tips.map(tip => `
+                <div class="tip-card">
+                    <div class="tip-title">${tip.title}</div>
+                    <div class="tip-text">${tip.text}</div>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // LIVE STATS
+        // ============================================
+        function updateLiveStats() {
+            const matches = parseInt(document.getElementById('matches').value) || 0;
+            const wins = parseInt(document.getElementById('wins').value) || 0;
+            const blunders = parseInt(document.getElementById('blunders').value) || 0;
+            const endgame = parseInt(document.getElementById('endgame_losses').value) || 0;
+            const safe = parseInt(document.getElementById('safe_moves').value) || 0;
+            const risky = parseInt(document.getElementById('risky_moves').value) || 0;
+
+            const winRate = matches > 0 ? Math.round((wins / matches) * 100) : 0;
+            const avgBlunders = matches > 0 ? (blunders / matches).toFixed(1) : '--';
+            const totalMoves = safe + risky;
+            const accuracy = totalMoves > 0 ? Math.round((safe / totalMoves) * 100) : 0;
+            const riskRatio = totalMoves > 0 ? Math.round((risky / totalMoves) * 100) : 0;
+            const endgameStrength = matches > 0 ? Math.max(0, 100 - Math.round((endgame / matches) * 100)) : 0;
+            const skillScore = matches > 0 ? Math.round((winRate * 0.4) + (accuracy * 0.3) + (endgameStrength * 0.3)) : 0;
+
+            document.getElementById('winRate').textContent = winRate + '%';
+            document.getElementById('avgBlunders').textContent = avgBlunders;
+            document.getElementById('skillScore').textContent = skillScore;
+
+            document.getElementById('winRateText').textContent = winRate + '%';
+            document.getElementById('winRateBar').style.width = winRate + '%';
+            document.getElementById('accuracyText').textContent = accuracy + '%';
+            document.getElementById('accuracyBar').style.width = accuracy + '%';
+            document.getElementById('riskText').textContent = riskRatio + '%';
+            document.getElementById('riskBar').style.width = riskRatio + '%';
+            document.getElementById('endgameText').textContent = endgameStrength + '%';
+            document.getElementById('endgameBar').style.width = endgameStrength + '%';
+
+            if (radarChart) {
+                radarChart.data.datasets[0].data = [
+                    winRate, accuracy, 100 - riskRatio, endgameStrength,
+                    Math.min(100, matches * 2), riskRatio
+                ];
+                radarChart.update();
+            }
+
+            updateAchievements(matches, wins, blunders, safe, risky, winRate);
+        }
+
+        // ============================================
+        // ACHIEVEMENTS
+        // ============================================
+        function updateAchievements(matches, wins, blunders, safe, risky, winRate) {
+            const totalMoves = safe + risky;
+            document.querySelectorAll('.achievement').forEach(a => {
+                const id = a.dataset.id;
+                let unlocked = false;
+                switch(id) {
+                    case 'first_win': unlocked = wins >= 1; break;
+                    case 'win_streak': unlocked = winRate >= 80 && matches >= 5; break;
+                    case 'perfect_game': unlocked = matches > 0 && blunders === 0; break;
+                    case 'comeback': unlocked = wins > 0 && document.getElementById('endgame_losses').value > 0; break;
+                    case 'strategist': unlocked = totalMoves > 0 && (safe / totalMoves) >= 0.8; break;
+                    case 'veteran': unlocked = matches >= 100; break;
+                    case 'master': unlocked = winRate >= 70 && matches >= 50; break;
+                    case 'risk_taker': unlocked = totalMoves > 0 && risky > safe; break;
+                }
+                if (unlocked) { a.classList.remove('locked'); a.style.borderColor = 'var(--neon-yellow)'; }
+            });
+        }
+
+        // ============================================
+        // SESSION HISTORY
+        // ============================================
+        function addToHistory(game, winRate, skillScore) {
+            const gameNames = { chess: '♟ Chess', carrom: '🎯 Carrom', ludo: '🎲 Ludo', uno: '🃏 UNO', snake_ladder: '🐍 Snake & Ladder' };
+            sessionHistory.unshift({
+                game: gameNames[game] || game, winRate: winRate, skillScore: skillScore,
+                time: new Date().toLocaleTimeString()
+            });
+            if (sessionHistory.length > 5) sessionHistory.pop();
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const container = document.getElementById('historyList');
+            if (sessionHistory.length === 0) {
+                container.innerHTML = '<div style="color: #555; text-align: center; padding: 1rem;">No analyses yet. Start by entering your match data!</div>';
+                return;
+            }
+            container.innerHTML = sessionHistory.map(h => `
+                <div class="history-item">
+                    <div><span class="history-game">${h.game}</span> <span class="history-date">${h.time}</span></div>
+                    <span class="history-score">${h.skillScore} pts</span>
+                </div>
+            `).join('');
+        }
+
+        // ============================================
+        // LOCAL AI FALLBACK
+        // ============================================
+        function localAnalyze(payload) {
+            const p = payload;
+            const winRate = p.matches > 0 ? (p.wins / p.matches) * 100 : 0;
+            const blunderRate = p.matches > 0 ? (p.blunders / p.matches) : 0;
+            const totalMoves = p.safe_moves + p.risky_moves;
+            const safeRatio = totalMoves > 0 ? (p.safe_moves / totalMoves) * 100 : 0;
+            const endgameRate = p.matches > 0 ? (p.endgame_losses / p.matches) * 100 : 0;
+
+            const feedback = [];
+            const personality = p.personality || 'analyst';
+            const tone = personality;
+
+            // Win rate
+            if (winRate >= 70) feedback.push(`📊 Your ${winRate.toFixed(1)}% win rate is elite tier!`);
+            else if (winRate >= 50) feedback.push(`📊 Solid ${winRate.toFixed(1)}% win rate. Focus on consistency.`);
+            else if (winRate >= 30) feedback.push(`📊 ${winRate.toFixed(1)}% shows potential. Work on fundamentals.`);
+            else feedback.push(`📊 ${winRate.toFixed(1)}% - every pro started here. Keep learning!`);
+
+            // Blunders
+            if (blunderRate >= 5) feedback.push(`⚠️ ${blunderRate.toFixed(1)} blunders/match is costing you dearly. Slow down!`);
+            else if (blunderRate >= 2) feedback.push(`📉 ${blunderRate.toFixed(1)} blunders/match - eliminating one more could boost wins by 15%.`);
+            else if (blunderRate > 0) feedback.push(`✅ Only ${blunderRate.toFixed(1)} blunders/match! Great precision.`);
+            else feedback.push(`🏆 ZERO blunders! Pro-level consistency!`);
+
+            // Risk
+            if (safeRatio < 40) feedback.push(`🔥 Too risky (${(100-safeRatio).toFixed(0)}% risky). Balance it out.`);
+            else if (safeRatio > 80) feedback.push(`🛡️ ${safeRatio.toFixed(0)}% safe moves - you're too conservative. Take more risks!`);
+            else feedback.push(`⚖️ ${safeRatio.toFixed(0)}% safe moves - good risk management.`);
+
+            // Endgame
+            if (endgameRate >= 30) feedback.push(`💀 ${endgameRate:.0f}% endgame losses - study closing scenarios!`);
+            else if (endgameRate >= 15) feedback.push(`📉 ${endgameRate.toFixed(0)}% endgame losses - maintain focus in final stages.`);
+            else if (endgameRate > 0) feedback.push(`✅ Only ${endgameRate.toFixed(0)}% endgame losses. Strong closing!`);
+            else feedback.push(`👑 ZERO endgame losses! You close like a champion!`);
+
+            // Game tip
+            const tips = gameTipsDB[p.game] || gameTipsDB.chess;
+            feedback.push(`💡 Tip: ${tips[0].text}`);
+
+            // Skill score
+            const skill = Math.round((winRate * 0.4) + (safeRatio * 0.3) + (Math.max(0, 100 - endgameRate) * 0.3));
+            if (skill >= 80) feedback.push(`👑 Skill Score: ${skill}/100 - MASTER TIER!`);
+            else if (skill >= 60) feedback.push(`💎 Skill Score: ${skill}/100 - DIAMOND TIER!`);
+            else if (skill >= 40) feedback.push(`🥇 Skill Score: ${skill}/100 - GOLD TIER!`);
+            else feedback.push(`🥉 Skill Score: ${skill}/100 - Keep grinding!`);
+
+            return { ai_coach_feedback: feedback };
+        }
+
+        // ============================================
+        // MAIN ANALYZE FUNCTION
+        // ============================================
+        function analyze() {
+            const btn = document.getElementById('analyzeBtn');
+            const loading = document.getElementById('loadingOverlay');
+
+            const payload = {
+                game: document.getElementById("game").value,
+                matches: parseInt(document.getElementById("matches").value || 0),
+                wins: parseInt(document.getElementById("wins").value || 0),
+                blunders: parseInt(document.getElementById("blunders").value || 0),
+                endgame_losses: parseInt(document.getElementById("endgame_losses").value || 0),
+                safe_moves: parseInt(document.getElementById("safe_moves").value || 0),
+                risky_moves: parseInt(document.getElementById("risky_moves").value || 0),
+                personality: currentPersonality
+            };
+
+            if (payload.matches === 0) {
+                alert("Please enter at least the number of matches played!");
+                return;
+            }
+
+            btn.disabled = true;
+            loading.classList.add('active');
+            updateLiveStats();
+
+            const winRate = payload.matches > 0 ? Math.round((payload.wins / payload.matches) * 100) : 0;
+            const totalMoves = payload.safe_moves + payload.risky_moves;
+            const accuracy = totalMoves > 0 ? Math.round((payload.safe_moves / totalMoves) * 100) : 0;
+            const endgameStrength = payload.matches > 0 ? Math.max(0, 100 - Math.round((payload.endgame_losses / payload.matches) * 100)) : 0;
+            const skillScore = payload.matches > 0 ? Math.round((winRate * 0.4) + (accuracy * 0.3) + (endgameStrength * 0.3)) : 0;
+
+            fetch(`${BACKEND_URL}/analyze`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Backend error');
+                return response.json();
+            })
+            .then(data => {
+                displayResults(data);
+                addToHistory(payload.game, winRate, skillScore);
+            })
+            .catch(error => {
+                console.log("Backend unavailable, using local AI:", error);
+                const localData = localAnalyze(payload);
+                displayResults(localData);
+                addToHistory(payload.game, winRate, skillScore);
+            })
+            .finally(() => {
+                btn.disabled = false;
+                loading.classList.remove('active');
+            });
+        }
+
+        function displayResults(data) {
+            const result = document.getElementById("result");
+            result.innerHTML = "";
+            if (!data.ai_coach_feedback || data.ai_coach_feedback.length === 0) {
+                result.innerHTML = "<li style='opacity:1;transform:none;border-left-color:#555;color:#555;'>No feedback received.</li>";
+                return;
+            }
+            const types = ['', 'success', 'warning', 'info', 'danger', 'success'];
+            data.ai_coach_feedback.forEach((feedback, idx) => {
+                const li = document.createElement("li");
+                li.textContent = feedback;
+                li.className = types[idx % types.length];
+                result.appendChild(li);
+            });
+        }
+
+        function clearAll() {
+            ['matches','wins','blunders','endgame_losses','safe_moves','risky_moves'].forEach(id => {
+                document.getElementById(id).value = '';
+            });
+            updateLiveStats();
+            document.getElementById('result').innerHTML = '<li style="opacity: 1; transform: none; border-left-color: #555; color: #555;">Enter your match data and click "Get AI Strategy" to receive personalized coaching feedback.</li>';
+        }
+
+        // ============================================
+        // INIT
+        // ============================================
+        document.addEventListener('DOMContentLoaded', () => {
+            initRadarChart();
+            updateGameTips();
+            renderHistory();
+
+            // Auto-update stats on input
+            ['matches','wins','blunders','endgame_losses','safe_moves','risky_moves'].forEach(id => {
+                document.getElementById(id).addEventListener('input', updateLiveStats);
+            });
+
+            // Check URL for pre-selected game
+            const urlParams = new URLSearchParams(window.location.search);
+            const preGame = urlParams.get('game');
+            if (preGame && document.getElementById('game').querySelector(`option[value="${preGame}"]`)) {
+                document.getElementById('game').value = preGame;
+                updateGameTips();
+            }
+        });
+    </script>
 </body>
 </html>
