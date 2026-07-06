@@ -12,10 +12,15 @@
             --neon-green: #00ff88;
             --neon-purple: #b829dd;
             --neon-orange: #ff6b35;
+<<<<<<< HEAD
             --neon-yellow: #ffdd00;
             --dark-bg: #0a0a0f;
             --card-bg: #12121a;
             --card-bg-2: #1a1a25;
+=======
+            --dark-bg: #0a0a0f;
+            --card-bg: #12121a;
+>>>>>>> 311ee27 (Completed login page)
             --border-glow: rgba(0, 243, 255, 0.3);
         }
 
@@ -41,9 +46,15 @@
             width: 100%;
             height: 100%;
             z-index: -1;
+<<<<<<< HEAD
             background:
                 radial-gradient(circle at 20% 50%, rgba(0, 243, 255, 0.04) 0%, transparent 50%),
                 radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.04) 0%, transparent 50%),
+=======
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 243, 255, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 0, 255, 0.05) 0%, transparent 50%),
+>>>>>>> 311ee27 (Completed login page)
                 radial-gradient(circle at 50% 10%, rgba(0, 255, 136, 0.03) 0%, transparent 50%);
         }
 
@@ -54,15 +65,23 @@
             left: 0;
             right: 0;
             bottom: 0;
+<<<<<<< HEAD
             background-image:
                 linear-gradient(rgba(0, 243, 255, 0.02) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 243, 255, 0.02) 1px, transparent 1px);
             background-size: 40px 40px;
+=======
+            background-image: 
+                linear-gradient(rgba(0, 243, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 243, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+>>>>>>> 311ee27 (Completed login page)
             animation: gridMove 20s linear infinite;
         }
 
         @keyframes gridMove {
             0% { transform: translate(0, 0); }
+<<<<<<< HEAD
             100% { transform: translate(40px, 40px); }
         }
 
@@ -102,6 +121,9 @@
             25% { transform: translateY(-30px) translateX(10px); opacity: 0.6; }
             50% { transform: translateY(-60px) translateX(-10px); opacity: 0.3; }
             75% { transform: translateY(-30px) translateX(15px); opacity: 0.5; }
+=======
+            100% { transform: translate(50px, 50px); }
+>>>>>>> 311ee27 (Completed login page)
         }
 
         /* Navigation */
@@ -110,27 +132,39 @@
             justify-content: space-between;
             align-items: center;
             padding: 1rem 3rem;
+<<<<<<< HEAD
             background: rgba(10, 10, 15, 0.95);
+=======
+            background: rgba(10, 10, 15, 0.9);
+>>>>>>> 311ee27 (Completed login page)
             backdrop-filter: blur(10px);
             border-bottom: 1px solid var(--border-glow);
             position: sticky;
             top: 0;
             z-index: 1000;
+<<<<<<< HEAD
             animation: slideDown 0.6s ease;
         }
 
         @keyframes slideDown {
             from { transform: translateY(-100%); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
+=======
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .logo {
             font-family: 'Orbitron', sans-serif;
+<<<<<<< HEAD
             font-size: 1.4rem;
+=======
+            font-size: 1.5rem;
+>>>>>>> 311ee27 (Completed login page)
             font-weight: 900;
             background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+<<<<<<< HEAD
             text-shadow: 0 0 30px rgba(0, 243, 255, 0.3);
             cursor: pointer;
             transition: all 0.3s;
@@ -139,6 +173,9 @@
         .logo:hover {
             transform: scale(1.05);
             filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.5));
+=======
+            text-shadow: 0 0 30px rgba(0, 243, 255, 0.5);
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .nav-links {
@@ -148,10 +185,17 @@
         }
 
         .nav-links a {
+<<<<<<< HEAD
             color: #888;
             text-decoration: none;
             font-weight: 500;
             font-size: 1.05rem;
+=======
+            color: #aaa;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1.1rem;
+>>>>>>> 311ee27 (Completed login page)
             transition: all 0.3s;
             position: relative;
         }
@@ -170,13 +214,17 @@
             height: 2px;
             background: var(--neon-cyan);
             transition: width 0.3s;
+<<<<<<< HEAD
             box-shadow: 0 0 10px var(--neon-cyan);
+=======
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .nav-links a:hover::after {
             width: 100%;
         }
 
+<<<<<<< HEAD
         .nav-cta {
             padding: 0.5rem 1.2rem;
             border-radius: 20px;
@@ -193,6 +241,25 @@
             background: var(--neon-cyan);
             color: var(--dark-bg);
             box-shadow: 0 0 20px rgba(0, 243, 255, 0.4);
+=======
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            border: 2px solid var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+>>>>>>> 311ee27 (Completed login page)
         }
 
         /* Hero Section */
@@ -200,6 +267,7 @@
             text-align: center;
             padding: 5rem 2rem 3rem;
             position: relative;
+<<<<<<< HEAD
             min-height: 90vh;
             display: flex;
             flex-direction: column;
@@ -222,16 +290,23 @@
             animation: fadeInUp 0.8s ease 0.2s both;
             letter-spacing: 2px;
             text-transform: uppercase;
+=======
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .hero h1 {
             font-family: 'Orbitron', sans-serif;
+<<<<<<< HEAD
             font-size: 4.5rem;
+=======
+            font-size: 4rem;
+>>>>>>> 311ee27 (Completed login page)
             font-weight: 900;
             background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink), var(--neon-green));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 1rem;
+<<<<<<< HEAD
             animation: titleGlow 3s ease-in-out infinite alternate, fadeInUp 0.8s ease 0.4s both;
             line-height: 1.1;
         }
@@ -264,10 +339,30 @@
 
         /* Game Icons */
         .game-icons {
+=======
+            animation: titleGlow 3s ease-in-out infinite alternate;
+        }
+
+        @keyframes titleGlow {
+            from { filter: drop-shadow(0 0 20px rgba(0, 243, 255, 0.5)); }
+            to { filter: drop-shadow(0 0 40px rgba(255, 0, 255, 0.5)); }
+        }
+
+        .hero p {
+            font-size: 1.5rem;
+            color: #888;
+            margin-bottom: 2rem;
+        }
+
+        .game-icons {
+            font-size: 3rem;
+            margin: 2rem 0;
+>>>>>>> 311ee27 (Completed login page)
             display: flex;
             justify-content: center;
             gap: 1.5rem;
             flex-wrap: wrap;
+<<<<<<< HEAD
             margin: 2rem 0 2.5rem;
             animation: fadeInUp 0.8s ease 0.8s both;
         }
@@ -312,6 +407,37 @@
         .neon-btn {
             padding: 1rem 2.5rem;
             font-size: 1.1rem;
+=======
+        }
+
+        .game-icon {
+            animation: float 3s ease-in-out infinite;
+            cursor: pointer;
+            transition: transform 0.3s;
+            filter: drop-shadow(0 0 10px rgba(0, 243, 255, 0.3));
+        }
+
+        .game-icon:nth-child(2) { animation-delay: 0.5s; }
+        .game-icon:nth-child(3) { animation-delay: 1s; }
+        .game-icon:nth-child(4) { animation-delay: 1.5s; }
+        .game-icon:nth-child(5) { animation-delay: 2s; }
+        .game-icon:nth-child(6) { animation-delay: 2.5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .game-icon:hover {
+            transform: scale(1.3);
+            filter: drop-shadow(0 0 20px var(--neon-cyan));
+        }
+
+        /* Neon Button */
+        .neon-btn {
+            padding: 1rem 3rem;
+            font-size: 1.2rem;
+>>>>>>> 311ee27 (Completed login page)
             font-family: 'Orbitron', sans-serif;
             font-weight: 700;
             color: var(--neon-cyan);
@@ -324,22 +450,34 @@
             transition: all 0.3s;
             text-transform: uppercase;
             letter-spacing: 2px;
+<<<<<<< HEAD
             box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.05);
             text-decoration: none;
             display: inline-block;
+=======
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.2), inset 0 0 20px rgba(0, 243, 255, 0.1);
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .neon-btn:hover {
             background: var(--neon-cyan);
             color: var(--dark-bg);
             box-shadow: 0 0 40px rgba(0, 243, 255, 0.6), inset 0 0 30px rgba(0, 243, 255, 0.2);
+<<<<<<< HEAD
             transform: translateY(-3px);
+=======
+            transform: translateY(-2px);
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .neon-btn.pink {
             border-color: var(--neon-pink);
             color: var(--neon-pink);
+<<<<<<< HEAD
             box-shadow: 0 0 20px rgba(255, 0, 255, 0.2), inset 0 0 20px rgba(255, 0, 255, 0.05);
+=======
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.2), inset 0 0 20px rgba(255, 0, 255, 0.1);
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .neon-btn.pink:hover {
@@ -351,7 +489,11 @@
         .neon-btn.green {
             border-color: var(--neon-green);
             color: var(--neon-green);
+<<<<<<< HEAD
             box-shadow: 0 0 20px rgba(0, 255, 136, 0.2), inset 0 0 20px rgba(0, 255, 136, 0.05);
+=======
+            box-shadow: 0 0 20px rgba(0, 255, 136, 0.2), inset 0 0 20px rgba(0, 255, 136, 0.1);
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .neon-btn.green:hover {
@@ -365,16 +507,24 @@
             display: flex;
             justify-content: center;
             gap: 3rem;
+<<<<<<< HEAD
             padding: 2.5rem 2rem;
+=======
+            padding: 2rem;
+>>>>>>> 311ee27 (Completed login page)
             background: rgba(18, 18, 26, 0.8);
             border-top: 1px solid var(--border-glow);
             border-bottom: 1px solid var(--border-glow);
             flex-wrap: wrap;
+<<<<<<< HEAD
             backdrop-filter: blur(5px);
+=======
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .stat-item {
             text-align: center;
+<<<<<<< HEAD
             animation: fadeInUp 0.6s ease both;
         }
 
@@ -403,17 +553,43 @@
         /* Section Styling */
         .section {
             padding: 5rem 2rem;
+=======
+        }
+
+        .stat-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--neon-cyan);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Game Categories */
+        .section {
+            padding: 4rem 2rem;
+>>>>>>> 311ee27 (Completed login page)
             max-width: 1400px;
             margin: 0 auto;
         }
 
         .section-title {
             font-family: 'Orbitron', sans-serif;
+<<<<<<< HEAD
             font-size: 2.2rem;
+=======
+            font-size: 2rem;
+>>>>>>> 311ee27 (Completed login page)
             text-align: center;
             margin-bottom: 3rem;
             color: var(--neon-cyan);
             text-shadow: 0 0 20px rgba(0, 243, 255, 0.3);
+<<<<<<< HEAD
             position: relative;
         }
 
@@ -432,12 +608,24 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
             gap: 1.5rem;
+=======
+        }
+
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .game-card {
             background: var(--card-bg);
             border: 1px solid rgba(255, 255, 255, 0.05);
+<<<<<<< HEAD
             border-radius: 16px;
+=======
+            border-radius: 15px;
+>>>>>>> 311ee27 (Completed login page)
             padding: 2rem;
             text-align: center;
             transition: all 0.4s;
@@ -453,8 +641,13 @@
             left: -100%;
             width: 100%;
             height: 100%;
+<<<<<<< HEAD
             background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.08), transparent);
             transition: left 0.6s;
+=======
+            background: linear-gradient(90deg, transparent, rgba(0, 243, 255, 0.1), transparent);
+            transition: left 0.5s;
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .game-card:hover::before {
@@ -464,41 +657,62 @@
         .game-card:hover {
             transform: translateY(-10px);
             border-color: var(--neon-cyan);
+<<<<<<< HEAD
             box-shadow: 0 15px 40px rgba(0, 243, 255, 0.15);
+=======
+            box-shadow: 0 10px 40px rgba(0, 243, 255, 0.2);
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .game-card .icon {
             font-size: 3rem;
             margin-bottom: 1rem;
+<<<<<<< HEAD
             transition: transform 0.3s;
         }
 
         .game-card:hover .icon {
             transform: scale(1.2);
+=======
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .game-card h3 {
             font-family: 'Orbitron', sans-serif;
+<<<<<<< HEAD
             font-size: 1.2rem;
+=======
+            font-size: 1.3rem;
+>>>>>>> 311ee27 (Completed login page)
             margin-bottom: 0.5rem;
             color: #fff;
         }
 
         .game-card p {
             color: #888;
+<<<<<<< HEAD
             font-size: 0.9rem;
             margin-bottom: 1.2rem;
             line-height: 1.5;
+=======
+            font-size: 0.95rem;
+            margin-bottom: 1.5rem;
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .game-card .tags {
             display: flex;
             flex-wrap: wrap;
+<<<<<<< HEAD
             gap: 0.4rem;
+=======
+            gap: 0.5rem;
+>>>>>>> 311ee27 (Completed login page)
             justify-content: center;
         }
 
         .tag {
+<<<<<<< HEAD
             padding: 0.25rem 0.7rem;
             border-radius: 20px;
             font-size: 0.75rem;
@@ -517,10 +731,26 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 1.5rem;
+=======
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            background: rgba(0, 243, 255, 0.1);
+            color: var(--neon-cyan);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+        }
+
+        /* AI Features */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .feature-card {
             background: linear-gradient(135deg, rgba(0, 243, 255, 0.05), rgba(255, 0, 255, 0.05));
+<<<<<<< HEAD
             border: 1px solid rgba(0, 243, 255, 0.15);
             border-radius: 16px;
             padding: 2rem;
@@ -543,30 +773,47 @@
 
         .feature-card:hover::after {
             opacity: 1;
+=======
+            border: 1px solid rgba(0, 243, 255, 0.2);
+            border-radius: 15px;
+            padding: 2rem;
+            transition: all 0.3s;
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .feature-card:hover {
             border-color: var(--neon-cyan);
+<<<<<<< HEAD
             box-shadow: 0 0 30px rgba(0, 243, 255, 0.1);
             transform: translateY(-5px);
+=======
+            box-shadow: 0 0 30px rgba(0, 243, 255, 0.15);
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .feature-icon {
             font-size: 2.5rem;
             margin-bottom: 1rem;
+<<<<<<< HEAD
             display: block;
+=======
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .feature-card h3 {
             font-family: 'Orbitron', sans-serif;
             color: var(--neon-cyan);
             margin-bottom: 0.5rem;
+<<<<<<< HEAD
             font-size: 1.1rem;
+=======
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .feature-card p {
             color: #aaa;
             line-height: 1.6;
+<<<<<<< HEAD
             font-size: 0.95rem;
         }
 
@@ -589,10 +836,44 @@
             height: 60px;
             border-radius: 50%;
             background: linear-gradient(135deg, var(--neon-cyan), var(--neon-purple));
+=======
+        }
+
+        /* Training Modules */
+        .training-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .training-item {
+            background: var(--card-bg);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .training-item:hover {
+            border-color: var(--neon-green);
+            background: rgba(0, 255, 136, 0.05);
+        }
+
+        .training-progress {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+>>>>>>> 311ee27 (Completed login page)
             display: flex;
             align-items: center;
             justify-content: center;
             font-family: 'Orbitron', sans-serif;
+<<<<<<< HEAD
             font-size: 1.5rem;
             font-weight: 900;
             color: var(--dark-bg);
@@ -674,11 +955,124 @@
         .testimonial-avatar {
             width: 40px;
             height: 40px;
+=======
+            font-weight: 700;
+            position: relative;
+        }
+
+        .training-progress.cyan { border-color: var(--neon-cyan); color: var(--neon-cyan); }
+        .training-progress.pink { border-color: var(--neon-pink); color: var(--neon-pink); }
+        .training-progress.green { border-color: var(--neon-green); color: var(--neon-green); }
+        .training-progress.orange { border-color: var(--neon-orange); color: var(--neon-orange); }
+
+        .training-info h4 {
+            font-family: 'Orbitron', sans-serif;
+            color: #fff;
+            margin-bottom: 0.3rem;
+        }
+
+        .training-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .training-status {
+            margin-left: auto;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .status-active {
+            background: rgba(0, 255, 136, 0.2);
+            color: var(--neon-green);
+            border: 1px solid var(--neon-green);
+        }
+
+        .status-locked {
+            background: rgba(255, 255, 255, 0.05);
+            color: #555;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Live Coaching Panel */
+        .coaching-panel {
+            background: linear-gradient(135deg, rgba(184, 41, 221, 0.1), rgba(255, 0, 255, 0.1));
+            border: 1px solid rgba(184, 41, 221, 0.3);
+            border-radius: 20px;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .coaching-info h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.8rem;
+            color: var(--neon-purple);
+            margin-bottom: 1rem;
+        }
+
+        .coaching-info p {
+            color: #aaa;
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .coaching-features {
+            list-style: none;
+        }
+
+        .coaching-features li {
+            padding: 0.5rem 0;
+            color: #ccc;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .coaching-features li::before {
+            content: '▸';
+            color: var(--neon-purple);
+            font-weight: bold;
+        }
+
+        .coaching-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .pulse-ring {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 2px solid var(--neon-purple);
+            position: absolute;
+            animation: pulse 2s ease-out infinite;
+        }
+
+        .pulse-ring:nth-child(2) { animation-delay: 0.5s; }
+        .pulse-ring:nth-child(3) { animation-delay: 1s; }
+
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 1; }
+            100% { transform: scale(1.5); opacity: 0; }
+        }
+
+        .ai-core {
+            width: 100px;
+            height: 100px;
+>>>>>>> 311ee27 (Completed login page)
             border-radius: 50%;
             background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
             display: flex;
             align-items: center;
             justify-content: center;
+<<<<<<< HEAD
             font-weight: bold;
             font-size: 1rem;
         }
@@ -740,6 +1134,62 @@
             margin-right: auto;
             position: relative;
             z-index: 1;
+=======
+            font-size: 2.5rem;
+            box-shadow: 0 0 40px rgba(184, 41, 221, 0.5);
+            z-index: 1;
+        }
+
+        /* Leaderboard */
+        .leaderboard {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+        }
+
+        .leaderboard-header {
+            background: linear-gradient(135deg, rgba(0, 243, 255, 0.2), rgba(255, 0, 255, 0.2));
+            padding: 1.5rem;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            text-align: center;
+        }
+
+        .leaderboard-row {
+            display: flex;
+            align-items: center;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.3s;
+        }
+
+        .leaderboard-row:hover {
+            background: rgba(0, 243, 255, 0.05);
+        }
+
+        .rank {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            width: 40px;
+            text-align: center;
+        }
+
+        .rank.gold { color: #ffd700; }
+        .rank.silver { color: #c0c0c0; }
+        .rank.bronze { color: #cd7f32; }
+
+        .player-name {
+            flex: 1;
+            margin-left: 1rem;
+            font-weight: 500;
+        }
+
+        .player-score {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-cyan);
+            font-weight: 700;
+>>>>>>> 311ee27 (Completed login page)
         }
 
         /* Footer */
@@ -764,7 +1214,10 @@
             font-family: 'Orbitron', sans-serif;
             color: var(--neon-cyan);
             margin-bottom: 1rem;
+<<<<<<< HEAD
             font-size: 0.95rem;
+=======
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .footer-section a {
@@ -773,7 +1226,10 @@
             text-decoration: none;
             padding: 0.3rem 0;
             transition: color 0.3s;
+<<<<<<< HEAD
             font-size: 0.9rem;
+=======
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .footer-section a:hover {
@@ -782,7 +1238,11 @@
 
         .social-links {
             display: flex;
+<<<<<<< HEAD
             gap: 0.8rem;
+=======
+            gap: 1rem;
+>>>>>>> 311ee27 (Completed login page)
             margin-top: 1rem;
         }
 
@@ -794,22 +1254,31 @@
             display: flex;
             align-items: center;
             justify-content: center;
+<<<<<<< HEAD
             font-size: 1.1rem;
             transition: all 0.3s;
             color: #888;
+=======
+            font-size: 1.2rem;
+            transition: all 0.3s;
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .social-links a:hover {
             background: var(--neon-cyan);
             border-color: var(--neon-cyan);
             color: var(--dark-bg);
+<<<<<<< HEAD
             transform: translateY(-3px);
+=======
+>>>>>>> 311ee27 (Completed login page)
         }
 
         .copyright {
             color: #444;
             padding-top: 2rem;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
+<<<<<<< HEAD
             font-size: 0.85rem;
         }
 
@@ -850,12 +1319,61 @@
             .stats-bar { gap: 1.5rem; }
             .section { padding: 3rem 1rem; }
             .cta-banner h2 { font-size: 1.5rem; }
+=======
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5rem; }
+            .nav-links { display: none; }
+            .coaching-panel { grid-template-columns: 1fr; }
+            .stats-bar { gap: 1.5rem; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark-bg);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-cyan);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-pink);
+        }
+
+        /* Notification Badge */
+        .notification {
+            position: relative;
+        }
+
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 18px;
+            height: 18px;
+            background: var(--neon-pink);
+            border-radius: 50%;
+            font-size: 0.7rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+>>>>>>> 311ee27 (Completed login page)
         }
     </style>
 <base target="_blank">
 </head>
 <body>
     <div class="bg-animation"></div>
+<<<<<<< HEAD
     <div class="particles">
         <div class="particle"></div>
         <div class="particle"></div>
@@ -933,11 +1451,90 @@
         <h2 class="section-title reveal">🎮 SUPPORTED GAMES</h2>
         <div class="game-grid">
             <div class="game-card reveal" onclick="goToGame('chess')">
+=======
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo">🎮 AI COACH</div>
+        <ul class="nav-links">
+            <li><a href="#games">Games</a></li>
+            <li><a href="#features">AI Features</a></li>
+            <li><a href="#training">Training</a></li>
+            <li><a href="#coaching">Live Coach</a></li>
+            <li><a href="#leaderboard">Rankings</a></li>
+        </ul>
+        <div class="user-profile">
+            <div class="notification">
+                🔔
+                <span class="badge">3</span>
+            </div>
+            <div class="avatar">JD</div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>AI GAME COACH</h1>
+        <p>Next-Gen AI Strategy Assistant for Gamers</p>
+
+        <div class="game-icons">
+            <span class="game-icon" title="Chess">♟️</span>
+            <span class="game-icon" title="FPS / Shooting">🎯</span>
+            <span class="game-icon" title="Board Games">🎲</span>
+            <span class="game-icon" title="Card Games">🃏</span>
+            <span class="game-icon" title="Snake / Arcade">🐍</span>
+            <span class="game-icon" title="Racing">🏎️</span>
+            <span class="game-icon" title="MOBA">⚔️</span>
+            <span class="game-icon" title="Puzzle">🧩</span>
+        </div>
+
+        <div style="display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap;">
+            <a href="login.html">
+                <button class="neon-btn">Start Coaching</button>
+            </a>
+            <a href="dashboard.html">
+                <button class="neon-btn pink">Open Dashboard</button>
+            </a>
+            <button class="neon-btn green" onclick="alert('Premium Features Unlocked!')">Go Premium</button>
+        </div>
+    </section>
+
+    <!-- Stats Bar -->
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-value">50K+</div>
+            <div class="stat-label">Active Players</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">12</div>
+            <div class="stat-label">Game Categories</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">2.4M</div>
+            <div class="stat-label">Matches Analyzed</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">98%</div>
+            <div class="stat-label">Accuracy Rate</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-value">24/7</div>
+            <div class="stat-label">AI Support</div>
+        </div>
+    </div>
+
+    <!-- Game Categories -->
+    <section class="section" id="games">
+        <h2 class="section-title">🎮 SUPPORTED GAMES</h2>
+        <div class="game-grid">
+            <div class="game-card" onclick="selectGame('chess')">
+>>>>>>> 311ee27 (Completed login page)
                 <div class="icon">♟️</div>
                 <h3>Chess</h3>
                 <p>Master openings, tactics, and endgames with deep AI analysis</p>
                 <div class="tags">
                     <span class="tag">Strategy</span>
+<<<<<<< HEAD
                     <span class="tag">1v1</span>
                 </div>
             </div>
@@ -975,6 +1572,80 @@
                 <div class="tags">
                     <span class="tag">Luck</span>
                     <span class="tag">Probability</span>
+=======
+                    <span class="tag">Classic</span>
+                    <span class="tag">1v1</span>
+                </div>
+            </div>
+            <div class="game-card" onclick="selectGame('fps')">
+                <div class="icon">🎯</div>
+                <h3>FPS Games</h3>
+                <p>CS2, Valorant, Apex - aim training and positioning guides</p>
+                <div class="tags">
+                    <span class="tag">Shooting</span>
+                    <span class="tag">Reflex</span>
+                    <span class="tag">Team</span>
+                </div>
+            </div>
+            <div class="game-card" onclick="selectGame('moba')">
+                <div class="icon">⚔️</div>
+                <h3>MOBA</h3>
+                <p>League of Legends, Dota 2 - macro play and champion mastery</p>
+                <div class="tags">
+                    <span class="tag">Team</span>
+                    <span class="tag">Macro</span>
+                    <span class="tag">5v5</span>
+                </div>
+            </div>
+            <div class="game-card" onclick="selectGame('rpg')">
+                <div class="icon">🗡️</div>
+                <h3>RPG / MMO</h3>
+                <p>WoW, Elden Ring, Genshin - build optimization and quest guides</p>
+                <div class="tags">
+                    <span class="tag">Story</span>
+                    <span class="tag">Builds</span>
+                    <span class="tag">Open World</span>
+                </div>
+            </div>
+            <div class="game-card" onclick="selectGame('racing')">
+                <div class="icon">🏎️</div>
+                <h3>Racing</h3>
+                <p>F1, Forza, Gran Turismo - racing lines and tuning setups</p>
+                <div class="tags">
+                    <span class="tag">Speed</span>
+                    <span class="tag">Precision</span>
+                    <span class="tag">Simulation</span>
+                </div>
+            </div>
+            <div class="game-card" onclick="selectGame('strategy')">
+                <div class="icon">🏰</div>
+                <h3>RTS / Strategy</h3>
+                <p>StarCraft, Age of Empires, Civilization - base building and tactics</p>
+                <div class="tags">
+                    <span class="tag">Base Build</span>
+                    <span class="tag">Economy</span>
+                    <span class="tag">Micro</span>
+                </div>
+            </div>
+            <div class="game-card" onclick="selectGame('fighting')">
+                <div class="icon">🥊</div>
+                <h3>Fighting Games</h3>
+                <p>Street Fighter, Tekken, MK - combos, frames, and matchups</p>
+                <div class="tags">
+                    <span class="tag">Combo</span>
+                    <span class="tag">Frames</span>
+                    <span class="tag">1v1</span>
+                </div>
+            </div>
+            <div class="game-card" onclick="selectGame('puzzle')">
+                <div class="icon">🧩</div>
+                <h3>Puzzle / Brain</h3>
+                <p>Sudoku, Crosswords, Portal - logic and pattern recognition</p>
+                <div class="tags">
+                    <span class="tag">Logic</span>
+                    <span class="tag">Pattern</span>
+                    <span class="tag">Solo</span>
+>>>>>>> 311ee27 (Completed login page)
                 </div>
             </div>
         </div>
@@ -982,6 +1653,7 @@
 
     <!-- AI Features -->
     <section class="section" id="features">
+<<<<<<< HEAD
         <h2 class="section-title reveal">🤖 AI POWERED FEATURES</h2>
         <div class="features-grid">
             <div class="feature-card reveal">
@@ -1013,10 +1685,44 @@
                 <span class="feature-icon">⚡</span>
                 <h3>Instant Results</h3>
                 <p>No waiting. Get your AI coach feedback in under a second. Fast, accurate, and always available 24/7.</p>
+=======
+        <h2 class="section-title">🤖 AI POWERED FEATURES</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Match Analysis</h3>
+                <p>Upload your gameplay recordings and get detailed breakdowns of your decisions, positioning, and missed opportunities with timestamped feedback.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Personalized Drills</h3>
+                <p>AI generates custom training routines based on your weaknesses. From aim trainers to puzzle challenges tailored to your skill level.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🧠</div>
+                <h3>Strategy Database</h3>
+                <p>Access millions of analyzed games, meta builds, and winning strategies updated in real-time as the meta evolves.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>AI Chat Coach</h3>
+                <p>Ask anything about your game in natural language. Get instant answers about mechanics, strategies, and patch notes.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>Progress Tracking</h3>
+                <p>Visualize your improvement over time with detailed graphs showing rank progression, skill metrics, and consistency scores.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎥</div>
+                <h3>Replay Review</h3>
+                <p>AI watches your replays and highlights key moments where better decisions could have changed the outcome.</p>
+>>>>>>> 311ee27 (Completed login page)
             </div>
         </div>
     </section>
 
+<<<<<<< HEAD
     <!-- How It Works -->
     <section class="section" id="how">
         <h2 class="section-title reveal">⚡ HOW IT WORKS</h2>
@@ -1043,10 +1749,56 @@
                 <div class="step-number">4</div>
                 <h3>Get Feedback</h3>
                 <p>Receive 6 personalized AI insights with skill score and tips</p>
+=======
+    <!-- Training Modules -->
+    <section class="section" id="training">
+        <h2 class="section-title">📚 TRAINING MODULES</h2>
+        <div class="training-list">
+            <div class="training-item">
+                <div class="training-progress cyan">85%</div>
+                <div class="training-info">
+                    <h4>Fundamentals Mastery</h4>
+                    <p>Core mechanics, controls, and basic strategies for beginners</p>
+                </div>
+                <span class="training-status status-active">In Progress</span>
+            </div>
+            <div class="training-item">
+                <div class="training-progress green">62%</div>
+                <div class="training-info">
+                    <h4>Advanced Tactics</h4>
+                    <p>Positioning, timing, and high-level decision making</p>
+                </div>
+                <span class="training-status status-active">In Progress</span>
+            </div>
+            <div class="training-item">
+                <div class="training-progress pink">30%</div>
+                <div class="training-info">
+                    <h4>Team Coordination</h4>
+                    <p>Communication, roles, and team fight strategies</p>
+                </div>
+                <span class="training-status status-active">In Progress</span>
+            </div>
+            <div class="training-item">
+                <div class="training-progress orange">0%</div>
+                <div class="training-info">
+                    <h4>Pro Level Analysis</h4>
+                    <p>Frame-perfect execution and tournament-level strategies</p>
+                </div>
+                <span class="training-status status-locked">Locked</span>
+            </div>
+            <div class="training-item">
+                <div class="training-progress" style="border-color: #555; color: #555;">0%</div>
+                <div class="training-info">
+                    <h4>Mental Game & Tilt Control</h4>
+                    <p>Psychology, focus techniques, and maintaining composure</p>
+                </div>
+                <span class="training-status status-locked">Locked</span>
+>>>>>>> 311ee27 (Completed login page)
             </div>
         </div>
     </section>
 
+<<<<<<< HEAD
     <!-- Testimonials -->
     <section class="section" id="testimonials">
         <h2 class="section-title reveal">💬 PLAYER REVIEWS</h2>
@@ -1083,10 +1835,36 @@
                         <div class="testimonial-role">Carrom Champion</div>
                     </div>
                 </div>
+=======
+    <!-- Live Coaching -->
+    <section class="section" id="coaching">
+        <h2 class="section-title">🔴 LIVE AI COACHING</h2>
+        <div class="coaching-panel">
+            <div class="coaching-info">
+                <h3>Real-Time In-Game Assistant</h3>
+                <p>Our AI coach monitors your gameplay live and provides instant suggestions through voice or overlay. Never miss an opportunity again.</p>
+                <ul class="coaching-features">
+                    <li>Live minimap awareness alerts</li>
+                    <li>Cooldown tracking and reminders</li>
+                    <li>Enemy position predictions</li>
+                    <li>Optimal item build suggestions</li>
+                    <li>Objective timing notifications</li>
+                    <li>Post-fight instant analysis</li>
+                </ul>
+                <br>
+                <button class="neon-btn pink">Activate Live Coach</button>
+            </div>
+            <div class="coaching-visual">
+                <div class="pulse-ring"></div>
+                <div class="pulse-ring"></div>
+                <div class="pulse-ring"></div>
+                <div class="ai-core">🤖</div>
+>>>>>>> 311ee27 (Completed login page)
             </div>
         </div>
     </section>
 
+<<<<<<< HEAD
     <!-- CTA Banner -->
     <section class="section">
         <div class="cta-banner reveal">
@@ -1095,6 +1873,52 @@
             <div class="cta-group" style="justify-content: center;">
                 <a href="dashboard.html" class="neon-btn">🚀 Start Free</a>
                 <button class="neon-btn pink" onclick="showDemo()">▶ Watch Demo</button>
+=======
+    <!-- Leaderboard -->
+    <section class="section" id="leaderboard">
+        <h2 class="section-title">🏆 GLOBAL RANKINGS</h2>
+        <div class="leaderboard">
+            <div class="leaderboard-header">Top AI Coach Users This Month</div>
+            <div class="leaderboard-row">
+                <div class="rank gold">1</div>
+                <div class="player-name">🔥 ProGamer_X</div>
+                <div class="player-score">9,847 pts</div>
+            </div>
+            <div class="leaderboard-row">
+                <div class="rank silver">2</div>
+                <div class="player-name">⚡ SpeedDemon</div>
+                <div class="player-score">9,621 pts</div>
+            </div>
+            <div class="leaderboard-row">
+                <div class="rank bronze">3</div>
+                <div class="player-name">🎯 SniperElite</div>
+                <div class="player-score">9,405 pts</div>
+            </div>
+            <div class="leaderboard-row">
+                <div class="rank">4</div>
+                <div class="player-name">♟️ ChessMaster</div>
+                <div class="player-score">8,932 pts</div>
+            </div>
+            <div class="leaderboard-row">
+                <div class="rank">5</div>
+                <div class="player-name">🛡️ TankCommander</div>
+                <div class="player-score">8,710 pts</div>
+            </div>
+            <div class="leaderboard-row">
+                <div class="rank">6</div>
+                <div class="player-name">🏎️ DriftKing</div>
+                <div class="player-score">8,523 pts</div>
+            </div>
+            <div class="leaderboard-row">
+                <div class="rank">7</div>
+                <div class="player-name">🧙‍♂️ SpellWeaver</div>
+                <div class="player-score">8,301 pts</div>
+            </div>
+            <div class="leaderboard-row">
+                <div class="rank">8</div>
+                <div class="player-name">🥷 ShadowNinja</div>
+                <div class="player-score">8,156 pts</div>
+>>>>>>> 311ee27 (Completed login page)
             </div>
         </div>
     </section>
@@ -1104,16 +1928,28 @@
         <div class="footer-content">
             <div class="footer-section">
                 <h4>Platform</h4>
+<<<<<<< HEAD
                 <a href="dashboard.html">Dashboard</a>
                 <a href="#">Mobile App</a>
                 <a href="#">Browser Extension</a>
                 <a href="#">API Access</a>
+=======
+                <a href="#">Web App</a>
+                <a href="#">Desktop App</a>
+                <a href="#">Mobile App</a>
+                <a href="#">Browser Extension</a>
+>>>>>>> 311ee27 (Completed login page)
             </div>
             <div class="footer-section">
                 <h4>Resources</h4>
                 <a href="#">Blog</a>
+<<<<<<< HEAD
                 <a href="#">Game Guides</a>
                 <a href="#">Strategy Database</a>
+=======
+                <a href="#">Tutorials</a>
+                <a href="#">API Docs</a>
+>>>>>>> 311ee27 (Completed login page)
                 <a href="#">Community</a>
             </div>
             <div class="footer-section">
@@ -1126,20 +1962,35 @@
             <div class="footer-section">
                 <h4>Connect</h4>
                 <div class="social-links">
+<<<<<<< HEAD
                     <a href="#" title="Twitter">𝕏</a>
                     <a href="#" title="Discord">💬</a>
                     <a href="#" title="GitHub">⚙</a>
                     <a href="#" title="YouTube">▶</a>
+=======
+                    <a href="#">𝕏</a>
+                    <a href="#">📘</a>
+                    <a href="#">📸</a>
+                    <a href="#">🎬</a>
+>>>>>>> 311ee27 (Completed login page)
                 </div>
             </div>
         </div>
         <div class="copyright">
+<<<<<<< HEAD
             <p>© 2026 AI Game Coach. All rights reserved. | <a href="#">Privacy</a> | <a href="#">Terms</a></p>
+=======
+            <p>© 2026 AI Game Coach. All rights reserved. | <a href="#" style="color: #555;">Privacy</a> | <a href="#" style="color: #555;">Terms</a></p>
+>>>>>>> 311ee27 (Completed login page)
         </div>
     </footer>
 
     <script>
+<<<<<<< HEAD
         // Smooth scroll for nav links
+=======
+        // Smooth scroll for navigation
+>>>>>>> 311ee27 (Completed login page)
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
@@ -1150,6 +2001,7 @@
             });
         });
 
+<<<<<<< HEAD
         // Scroll reveal animation
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -1209,6 +2061,57 @@
 
         // Typing effect for subtitle
         const subtitle = document.querySelector('.hero-subtitle');
+=======
+        // Game selection handler
+        function selectGame(game) {
+            const gameNames = {
+                'chess': 'Chess',
+                'fps': 'FPS Games',
+                'moba': 'MOBA',
+                'rpg': 'RPG / MMO',
+                'racing': 'Racing',
+                'strategy': 'RTS / Strategy',
+                'fighting': 'Fighting Games',
+                'puzzle': 'Puzzle / Brain'
+            };
+            alert(`🎮 Loading AI Coach for: ${gameNames[game]}\n\nFeatures activated:
+• Match Analysis
+• Strategy Database
+• Personalized Drills
+• Live Coaching`);
+        }
+
+        // Animate stats on scroll
+        const observerOptions = {
+            threshold: 0.5,
+            rootMargin: '0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeInUp 0.6s ease forwards';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.game-card, .feature-card, .training-item').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Add fade animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from { opacity: 0; transform: translateY(30px); }
+                to { opacity: 1; transform: translateY(0); }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Typing effect for hero subtitle
+        const subtitle = document.querySelector('.hero p');
+>>>>>>> 311ee27 (Completed login page)
         const text = subtitle.textContent;
         subtitle.textContent = '';
         let i = 0;
@@ -1216,10 +2119,17 @@
             if (i < text.length) {
                 subtitle.textContent += text.charAt(i);
                 i++;
+<<<<<<< HEAD
                 setTimeout(typeWriter, 40);
             }
         }
         setTimeout(typeWriter, 600);
+=======
+                setTimeout(typeWriter, 50);
+            }
+        }
+        setTimeout(typeWriter, 500);
+>>>>>>> 311ee27 (Completed login page)
     </script>
 </body>
 </html>

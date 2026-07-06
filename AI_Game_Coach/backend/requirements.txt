@@ -1,2 +1,6 @@
-flask
-flask-cors
+flask==3.0.3
+flask-cors==5.0.0
+flask-jwt-extended==4.7.1
+flask-bcrypt==1.0.1
+google-generativeai==0.8.3
+python-dotenv==1.0.1

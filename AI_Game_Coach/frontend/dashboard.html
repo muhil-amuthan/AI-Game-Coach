@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>AI Game Coach Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -701,7 +700,7 @@
             else feedback.push(`⚖️ ${safeRatio.toFixed(0)}% safe moves - good risk management.`);
 
             // Endgame
-            if (endgameRate >= 30) feedback.push(`💀 ${endgameRate:.0f}% endgame losses - study closing scenarios!`);
+            if (endgameRate >= 30) feedback.push(`💀 ${endgameRate.toFixed(0)}% endgame losses - study closing scenarios!`);
             else if (endgameRate >= 15) feedback.push(`📉 ${endgameRate.toFixed(0)}% endgame losses - maintain focus in final stages.`);
             else if (endgameRate > 0) feedback.push(`✅ Only ${endgameRate.toFixed(0)}% endgame losses. Strong closing!`);
             else feedback.push(`👑 ZERO endgame losses! You close like a champion!`);
@@ -824,5 +823,1206 @@
             }
         });
     </script>
+    <title>AI Game Coach - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* ── Variables ─────────────────────────────────── */
+        :root {
+            --neon-cyan:    #00f3ff;
+            --neon-pink:    #ff00ff;
+            --neon-green:   #00ff88;
+            --neon-purple:  #b829dd;
+            --neon-orange:  #ff6b35;
+            --dark-bg:      #0a0a0f;
+            --card-bg:      #12121a;
+            --sidebar-bg:   #0e0e16;
+            --border-glow:  rgba(0,243,255,0.2);
+            --text-dim:     #888;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: var(--dark-bg);
+            color: #e0e0e0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ── Top Bar ───────────────────────────────────── */
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.8rem 1.5rem;
+            background: var(--sidebar-bg);
+            border-bottom: 1px solid var(--border-glow);
+            flex-shrink: 0;
+            z-index: 100;
+        }
+
+        .topbar-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, var(--neon-cyan), var(--neon-pink));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            background: rgba(0,243,255,0.05);
+            border: 1px solid var(--border-glow);
+            border-radius: 25px;
+            padding: 0.4rem 1rem;
+        }
+
+        .user-avatar {
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 0.9rem;
+            border: 2px solid var(--neon-cyan);
+        }
+
+        .user-name {
+            font-weight: 700;
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .guest-badge {
+            background: rgba(255,107,53,0.1);
+            border-color: rgba(255,107,53,0.4);
+            color: var(--neon-orange);
+            font-size: 0.75rem;
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            border: 1px solid;
+        }
+
+        .topbar-btn {
+            padding: 0.4rem 1rem;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 20px;
+            color: #888;
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .topbar-btn:hover {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+
+        .topbar-btn.danger:hover {
+            border-color: #ff4757;
+            color: #ff4757;
+        }
+
+        /* ── Main Layout ───────────────────────────────── */
+        .main-layout {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* ── Sidebar ───────────────────────────────────── */
+        .sidebar {
+            width: 260px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border-glow);
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+            flex-shrink: 0;
+        }
+
+        .sidebar-section {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+
+        .sidebar-label {
+            font-size: 0.72rem;
+            color: #444;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.7rem;
+            padding: 0 0.5rem;
+        }
+
+        /* Game selector */
+        .game-select-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .game-chip {
+            padding: 0.5rem;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-size: 0.78rem;
+            color: #888;
+        }
+
+        .game-chip:hover {
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+
+        .game-chip.selected {
+            background: rgba(0,243,255,0.1);
+            border-color: var(--neon-cyan);
+            color: var(--neon-cyan);
+            box-shadow: 0 0 12px rgba(0,243,255,0.15);
+        }
+
+        .game-chip .chip-icon { font-size: 1.3rem; display: block; }
+        .game-chip .chip-name { font-size: 0.7rem; margin-top: 0.2rem; }
+
+        /* Quick tips */
+        .tip-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+
+        .tip-item {
+            background: rgba(255,255,255,0.03);
+            border-left: 2px solid var(--neon-cyan);
+            border-radius: 0 6px 6px 0;
+            padding: 0.5rem 0.7rem;
+            font-size: 0.83rem;
+            color: #aaa;
+            line-height: 1.4;
+        }
+
+        /* Stats mini */
+        .stats-mini {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.4rem 0.5rem;
+            background: rgba(255,255,255,0.02);
+            border-radius: 6px;
+        }
+
+        .stat-row-label { color: #666; font-size: 0.85rem; }
+        .stat-row-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.85rem;
+            color: var(--neon-cyan);
+        }
+
+        /* Session controls */
+        .sidebar-btn {
+            width: 100%;
+            padding: 0.7rem;
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #888;
+            cursor: pointer;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .sidebar-btn:hover {
+            border-color: var(--neon-pink);
+            color: var(--neon-pink);
+        }
+
+        .sidebar-btn.green:hover {
+            border-color: var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        /* ── Chat Area ─────────────────────────────────── */
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Chat Header */
+        .chat-header {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-glow);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(18,18,26,0.6);
+            flex-shrink: 0;
+        }
+
+        .chat-header-left {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .ai-indicator {
+            width: 10px; height: 10px;
+            border-radius: 50%;
+            background: var(--neon-green);
+            box-shadow: 0 0 10px var(--neon-green);
+            animation: blink 2s ease-in-out infinite;
+        }
+
+        @keyframes blink {
+            0%,100% { opacity: 1; }
+            50%      { opacity: 0.3; }
+        }
+
+        .chat-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            color: var(--neon-cyan);
+        }
+
+        .chat-subtitle {
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        /* Guest limit bar */
+        .guest-limit-bar {
+            display: none;
+            background: rgba(255,107,53,0.1);
+            border: 1px solid rgba(255,107,53,0.3);
+            border-radius: 8px;
+            padding: 0.6rem 1rem;
+            margin: 0.5rem 1.5rem 0;
+            font-size: 0.88rem;
+            color: var(--neon-orange);
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .guest-limit-bar.show {
+            display: flex;
+        }
+
+        /* Messages */
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1.2rem;
+        }
+
+        /* Welcome message */
+        .welcome-msg {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .welcome-msg .bot-avatar-large {
+            width: 70px; height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1rem;
+            box-shadow: 0 0 30px rgba(184,41,221,0.4);
+        }
+
+        .welcome-msg h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .welcome-msg p {
+            color: #666;
+            font-size: 0.95rem;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        /* Suggestion pills */
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .suggestion-pill {
+            padding: 0.5rem 1rem;
+            border: 1px solid rgba(0,243,255,0.25);
+            border-radius: 20px;
+            background: rgba(0,243,255,0.05);
+            color: var(--neon-cyan);
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.25s;
+        }
+
+        .suggestion-pill:hover {
+            background: rgba(0,243,255,0.15);
+            box-shadow: 0 0 15px rgba(0,243,255,0.2);
+        }
+
+        /* Message bubbles */
+        .message {
+            display: flex;
+            gap: 0.8rem;
+            animation: msgFadeIn 0.3s ease;
+        }
+
+        @keyframes msgFadeIn {
+            from { opacity:0; transform: translateY(10px); }
+            to   { opacity:1; transform: translateY(0); }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .msg-avatar {
+            width: 36px; height: 36px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .msg-avatar.ai {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-pink));
+            border: 2px solid var(--neon-purple);
+        }
+
+        .msg-avatar.user {
+            background: linear-gradient(135deg, var(--neon-cyan), #0080ff);
+            border: 2px solid var(--neon-cyan);
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .msg-content {
+            max-width: 70%;
+        }
+
+        .msg-bubble {
+            padding: 0.9rem 1.2rem;
+            border-radius: 16px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .message.ai .msg-bubble {
+            background: rgba(18,18,26,0.9);
+            border: 1px solid rgba(184,41,221,0.3);
+            border-top-left-radius: 4px;
+            color: #ddd;
+        }
+
+        .message.user .msg-bubble {
+            background: linear-gradient(135deg,
+                rgba(0,243,255,0.15), rgba(0,128,255,0.15));
+            border: 1px solid rgba(0,243,255,0.3);
+            border-top-right-radius: 4px;
+            color: #fff;
+            text-align: right;
+        }
+
+        .msg-time {
+            font-size: 0.72rem;
+            color: #444;
+            margin-top: 0.3rem;
+            padding: 0 0.3rem;
+        }
+
+        .message.user .msg-time { text-align: right; }
+
+        /* Typing indicator */
+        .typing-indicator {
+            display: none;
+            gap: 0.8rem;
+        }
+
+        .typing-indicator.show { display: flex; }
+
+        .typing-dots {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.9rem 1.2rem;
+            background: rgba(18,18,26,0.9);
+            border: 1px solid rgba(184,41,221,0.3);
+            border-radius: 16px;
+            border-top-left-radius: 4px;
+        }
+
+        .dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            background: var(--neon-purple);
+            animation: dotBounce 1.2s ease-in-out infinite;
+        }
+
+        .dot:nth-child(2) { animation-delay: 0.2s; }
+        .dot:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes dotBounce {
+            0%,100% { transform: translateY(0); opacity: 0.4; }
+            50%      { transform: translateY(-6px); opacity: 1; }
+        }
+
+        /* ── Input Bar ─────────────────────────────────── */
+        .input-bar {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--border-glow);
+            background: rgba(14,14,22,0.9);
+            flex-shrink: 0;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 0.8rem;
+            align-items: flex-end;
+        }
+
+        .chat-textarea {
+            flex: 1;
+            background: rgba(255,255,255,0.04);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            padding: 0.8rem 1rem;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            resize: none;
+            outline: none;
+            max-height: 120px;
+            min-height: 44px;
+            transition: border 0.3s;
+        }
+
+        .chat-textarea:focus {
+            border-color: var(--neon-cyan);
+            box-shadow: 0 0 15px rgba(0,243,255,0.1);
+        }
+
+        .chat-textarea::placeholder { color: #444; }
+
+        .send-btn {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg,
+                rgba(0,243,255,0.2), rgba(255,0,255,0.2));
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+            font-size: 1.3rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: var(--neon-cyan);
+            color: var(--dark-bg);
+            box-shadow: 0 0 25px rgba(0,243,255,0.4);
+        }
+
+        .send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+        .input-hint {
+            font-size: 0.78rem;
+            color: #444;
+            margin-top: 0.5rem;
+            text-align: center;
+        }
+
+        /* ── Scrollbar ─────────────────────────────────── */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0,243,255,0.3);
+            border-radius: 3px;
+        }
+
+        /* ── Responsive ────────────────────────────────── */
+        @media (max-width: 768px) {
+            .sidebar { display: none; }
+
+            .msg-content { max-width: 85%; }
+        }
+
+        /* ── Notification Toast ────────────────────────── */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-size: 0.95rem;
+            z-index: 9999;
+            animation: toastIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toast.success {
+            background: rgba(0,255,136,0.15);
+            border: 1px solid var(--neon-green);
+            color: var(--neon-green);
+        }
+
+        .toast.error {
+            background: rgba(255,71,87,0.15);
+            border: 1px solid #ff4757;
+            color: #ff4757;
+        }
+
+        .toast.info {
+            background: rgba(0,243,255,0.15);
+            border: 1px solid var(--neon-cyan);
+            color: var(--neon-cyan);
+        }
+
+        @keyframes toastIn {
+            from { opacity:0; transform: translateX(30px); }
+            to   { opacity:1; transform: translateX(0); }
+        }
+
+        /* Formatted AI response */
+        .msg-bubble ul {
+            margin: 0.5rem 0 0.5rem 1.2rem;
+        }
+        .msg-bubble li { margin-bottom: 0.3rem; }
+        .msg-bubble strong { color: var(--neon-cyan); }
+    </style>
+</head>
+<body>
+
+<!-- ── Top Bar ───────────────────────────────────────── -->
+<div class="topbar">
+    <div class="topbar-logo">🎮 AI COACH</div>
+
+    <div class="topbar-right">
+        <!-- User badge -->
+        <div class="user-badge">
+            <div class="user-avatar" id="topbar-avatar">?</div>
+            <span class="user-name"  id="topbar-username">Loading...</span>
+            <span class="guest-badge" id="topbar-guest" style="display:none;">GUEST</span>
+        </div>
+
+        <button class="topbar-btn" onclick="goHome()">🏠 Home</button>
+        <button class="topbar-btn danger" onclick="handleLogout()">⏏ Logout</button>
+    </div>
+</div>
+
+<!-- ── Main Layout ────────────────────────────────────── -->
+<div class="main-layout">
+
+    <!-- ── Sidebar ─────────────────────────────────────── -->
+    <aside class="sidebar">
+
+        <!-- Game Selector -->
+        <div class="sidebar-section">
+            <div class="sidebar-label">Select Game</div>
+            <div class="game-select-grid" id="game-grid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <!-- Quick Tips -->
+        <div class="sidebar-section">
+            <div class="sidebar-label">Quick Tips</div>
+            <div class="tip-list" id="tip-list">
+                <div class="tip-item">Select a game to see tips</div>
+            </div>
+        </div>
+
+        <!-- Session Stats -->
+        <div class="sidebar-section">
+            <div class="sidebar-label">Session Stats</div>
+            <div class="stats-mini">
+                <div class="stat-row">
+                    <span class="stat-row-label">Messages</span>
+                    <span class="stat-row-value" id="stat-messages">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-row-label">Game</span>
+                    <span class="stat-row-value" id="stat-game">General</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-row-label">Status</span>
+                    <span class="stat-row-value" style="color:var(--neon-green)">● Online</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="sidebar-section">
+            <div class="sidebar-label">Controls</div>
+            <button class="sidebar-btn" onclick="clearChat()">
+                🗑️ Clear Conversation
+            </button>
+            <button class="sidebar-btn green" onclick="goHome()">
+                🏠 Back to Home
+            </button>
+        </div>
+
+    </aside>
+
+    <!-- ── Chat Area ────────────────────────────────────── -->
+    <div class="chat-area">
+
+        <!-- Chat Header -->
+        <div class="chat-header">
+            <div class="chat-header-left">
+                <div class="ai-indicator"></div>
+                <div>
+                    <div class="chat-title" id="chat-title">AI COACH — General</div>
+                    <div class="chat-subtitle">Ask anything about your game</div>
+                </div>
+            </div>
+            <div style="font-size:0.85rem; color:#555;" id="msg-counter">
+                0 messages
+            </div>
+        </div>
+
+        <!-- Guest Limit Banner -->
+        <div class="guest-limit-bar" id="guest-bar">
+            <span>⚠️ Guest mode: <strong id="msgs-left">5</strong> messages remaining</span>
+            <a href="login.html"
+               style="color:var(--neon-orange);text-decoration:none;font-weight:700;">
+                Register Free →
+            </a>
+        </div>
+
+        <!-- Messages -->
+        <div class="messages-container" id="messages">
+
+            <!-- Welcome Screen -->
+            <div class="welcome-msg" id="welcome-screen">
+                <div class="bot-avatar-large">🤖</div>
+                <h3 id="welcome-title">Ready to Coach You!</h3>
+                <p id="welcome-text">
+                    Select a game from the sidebar, then ask me anything —
+                    strategy tips, build guides, mechanics, or anything else!
+                </p>
+
+                <div class="suggestions" id="suggestions">
+                    <div class="suggestion-pill"
+                         onclick="sendSuggestion(this)">
+                        How do I improve my rank?
+                    </div>
+                    <div class="suggestion-pill"
+                         onclick="sendSuggestion(this)">
+                        What are beginner mistakes?
+                    </div>
+                    <div class="suggestion-pill"
+                         onclick="sendSuggestion(this)">
+                        Give me a training routine
+                    </div>
+                    <div class="suggestion-pill"
+                         onclick="sendSuggestion(this)">
+                        Best strategies to win?
+                    </div>
+                    <div class="suggestion-pill"
+                         onclick="sendSuggestion(this)">
+                        How do pros think differently?
+                    </div>
+                    <div class="suggestion-pill"
+                         onclick="sendSuggestion(this)">
+                        Help me control my tilt
+                    </div>
+                </div>
+            </div>
+
+            <!-- Typing indicator (hidden by default) -->
+            <div class="typing-indicator" id="typing-indicator">
+                <div class="msg-avatar ai">🤖</div>
+                <div class="typing-dots">
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+
+        </div>
+        <!-- end messages -->
+
+        <!-- Input Bar -->
+        <div class="input-bar">
+            <div class="input-row">
+                <textarea
+                    class="chat-textarea"
+                    id="chat-input"
+                    placeholder="Ask your AI coach anything..."
+                    rows="1"
+                    onkeydown="handleKeyDown(event)"
+                    oninput="autoResize(this)"
+                ></textarea>
+                <button class="send-btn" id="send-btn" onclick="sendMessage()">➤</button>
+            </div>
+            <div class="input-hint">
+                Press <kbd style="color:#666">Enter</kbd> to send &nbsp;|&nbsp;
+                <kbd style="color:#666">Shift+Enter</kbd> for new line
+            </div>
+        </div>
+
+    </div>
+    <!-- end chat-area -->
+
+</div>
+<!-- end main-layout -->
+
+<script>
+    // ── Config ─────────────────────────────────────────────────────────
+    const API_BASE = "http://localhost:5000/api";
+
+    // ── State ──────────────────────────────────────────────────────────
+    let authToken    = "";
+    let username     = "Player";
+    let isGuest      = false;
+    let sessionId    = "";
+    let selectedGame = "general";
+    let messageCount = 0;
+    let guestMsgsLeft = 5;
+    let isSending    = false;
+
+    // ── Game definitions ───────────────────────────────────────────────
+    const GAMES = [
+        { key: "chess",    icon: "♟️",  name: "Chess"    },
+        { key: "fps",      icon: "🎯",  name: "FPS"      },
+        { key: "moba",     icon: "⚔️",  name: "MOBA"     },
+        { key: "rpg",      icon: "🗡️",  name: "RPG"      },
+        { key: "racing",   icon: "🏎️",  name: "Racing"   },
+        { key: "strategy", icon: "🏰",  name: "RTS"      },
+        { key: "fighting", icon: "🥊",  name: "Fighting" },
+        { key: "puzzle",   icon: "🧩",  name: "Puzzle"   },
+        { key: "general",  icon: "🎮",  name: "General"  },
+    ];
+
+    // ── Init ───────────────────────────────────────────────────────────
+    document.addEventListener("DOMContentLoaded", () => {
+        loadAuthData();
+        buildGameGrid();
+        selectGame("general");
+        setupGuestUI();
+    });
+
+    function loadAuthData() {
+        // Try localStorage (remember me), then sessionStorage
+        authToken = localStorage.getItem("authToken")
+                 || sessionStorage.getItem("authToken") || "";
+        username  = localStorage.getItem("username")
+                 || sessionStorage.getItem("username") || "Player";
+        isGuest   = sessionStorage.getItem("isGuest") === "true";
+        sessionId = sessionStorage.getItem("sessionId") || "";
+
+        // If not logged in and not guest, redirect to login
+        if (!authToken && !isGuest) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        // Update topbar
+        const initials = username.slice(0,2).toUpperCase();
+        document.getElementById("topbar-avatar").textContent   = initials;
+        document.getElementById("topbar-username").textContent = username;
+
+        if (isGuest) {
+            document.getElementById("topbar-guest").style.display = "inline";
+        }
+
+        // Personalize welcome
+        document.getElementById("welcome-title").textContent =
+            isGuest
+            ? "Welcome, Guest! 👋"
+            : `Welcome back, ${username}! 👋`;
+    }
+
+    function setupGuestUI() {
+        if (isGuest) {
+            document.getElementById("guest-bar").classList.add("show");
+            document.getElementById("msgs-left").textContent = guestMsgsLeft;
+        }
+    }
+
+    // ── Game Grid ──────────────────────────────────────────────────────
+    function buildGameGrid() {
+        const grid = document.getElementById("game-grid");
+        grid.innerHTML = "";
+        GAMES.forEach(g => {
+            const chip     = document.createElement("div");
+            chip.className = "game-chip";
+            chip.id        = `chip-${g.key}`;
+            chip.innerHTML = `<span class="chip-icon">${g.icon}</span>
+                              <span class="chip-name">${g.name}</span>`;
+            chip.onclick   = () => selectGame(g.key);
+            grid.appendChild(chip);
+        });
+    }
+
+    function selectGame(gameKey) {
+        selectedGame = gameKey;
+
+        // Update chips
+        document.querySelectorAll(".game-chip").forEach(c =>
+            c.classList.remove("selected"));
+        const chip = document.getElementById(`chip-${gameKey}`);
+        if (chip) chip.classList.add("selected");
+
+        // Update header
+        const game = GAMES.find(g => g.key === gameKey) || GAMES[8];
+        document.getElementById("chat-title").textContent =
+            `AI COACH — ${game.icon} ${game.name}`;
+        document.getElementById("stat-game").textContent = game.name;
+
+        // Load tips
+        loadTips(gameKey);
+    }
+
+    async function loadTips(gameKey) {
+        try {
+            const res  = await fetch(`${API_BASE}/coach/tips/${gameKey}`);
+            const data = await res.json();
+
+            if (data.success && data.tips) {
+                const list = document.getElementById("tip-list");
+                list.innerHTML = data.tips.map(t =>
+                    `<div class="tip-item">${t}</div>`).join("");
+            }
+        } catch {
+            // Use fallback tips
+            document.getElementById("tip-list").innerHTML =
+                `<div class="tip-item">🎮 Practice consistently every day</div>
+                 <div class="tip-item">📊 Review your losses to improve</div>
+                 <div class="tip-item">🧠 Focus on one skill at a time</div>`;
+        }
+    }
+
+    // ── Send Message ───────────────────────────────────────────────────
+    async function sendMessage(messageOverride = null) {
+        const input   = document.getElementById("chat-input");
+        const message = (messageOverride || input.value).trim();
+
+        if (!message || isSending) return;
+
+        // Guest limit check
+        if (isGuest && guestMsgsLeft <= 0) {
+            showToast("Guest limit reached! Register for unlimited coaching.", "error");
+            setTimeout(() => window.location.href = "login.html", 2000);
+            return;
+        }
+
+        // Clear welcome screen on first message
+        const welcome = document.getElementById("welcome-screen");
+        if (welcome) welcome.remove();
+
+        isSending = true;
+        input.value  = "";
+        autoResize(input);
+        setSendLoading(true);
+
+        // Add user message to UI
+        appendMessage("user", message);
+        messageCount++;
+        updateCounter();
+
+        // Show typing indicator
+        showTyping(true);
+
+        try {
+            let data;
+
+            if (isGuest) {
+                // Guest endpoint
+                const res = await fetch(`${API_BASE}/coach/chat/guest`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        message,
+                        game_type:  selectedGame,
+                        session_id: sessionId
+                    })
+                });
+                data = await res.json();
+
+                if (data.limit_reached) {
+                    showTyping(false);
+                    showToast("Guest limit reached! Redirecting to register...", "error");
+                    setTimeout(() => window.location.href = "login.html", 2500);
+                    return;
+                }
+
+                // Update sessionId if new
+                if (data.session_id) sessionId = data.session_id;
+
+                // Update guest counter
+                guestMsgsLeft = data.messages_left ?? (guestMsgsLeft - 1);
+                document.getElementById("msgs-left").textContent = guestMsgsLeft;
+
+            } else {
+                // Authenticated endpoint
+                const res = await fetch(`${API_BASE}/coach/chat`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type":  "application/json",
+                        "Authorization": `Bearer ${authToken}`
+                    },
+                    body: JSON.stringify({
+                        message,
+                        game_type: selectedGame
+                    })
+                });
+                data = await res.json();
+
+                // Handle token expiry
+                if (res.status === 401) {
+                    showToast("Session expired. Please log in again.", "error");
+                    setTimeout(handleLogout, 2000);
+                    return;
+                }
+            }
+
+            showTyping(false);
+
+            if (data.success) {
+                appendMessage("ai", data.response);
+                // Update tips from response
+                if (data.quick_tips) updateTips(data.quick_tips);
+            } else {
+                appendMessage("ai", `⚠️ ${data.response || "Something went wrong."}`);
+            }
+
+        } catch (err) {
+            showTyping(false);
+            appendMessage("ai",
+                "⚠️ Cannot connect to the server. Make sure the backend is running on port 5000.");
+        } finally {
+            isSending = false;
+            setSendLoading(false);
+        }
+    }
+
+    function sendSuggestion(el) {
+        const text = el.textContent.trim();
+        document.getElementById("chat-input").value = text;
+        sendMessage();
+    }
+
+    // ── Message Rendering ──────────────────────────────────────────────
+    function appendMessage(role, content) {
+        const container = document.getElementById("messages");
+        const typing    = document.getElementById("typing-indicator");
+
+        const wrapper = document.createElement("div");
+        wrapper.className = `message ${role}`;
+
+        const time = new Date().toLocaleTimeString([], {
+            hour: "2-digit", minute: "2-digit"
+        });
+
+        const avatarHTML = role === "ai"
+            ? `<div class="msg-avatar ai">🤖</div>`
+            : `<div class="msg-avatar user">${username.slice(0,2).toUpperCase()}</div>`;
+
+        // Format AI content (convert markdown-ish to HTML)
+        const formatted = role === "ai"
+            ? formatAIResponse(content)
+            : escapeHTML(content);
+
+        wrapper.innerHTML = `
+            ${avatarHTML}
+            <div class="msg-content">
+                <div class="msg-bubble">${formatted}</div>
+                <div class="msg-time">${time}</div>
+            </div>
+        `;
+
+        // Insert before typing indicator
+        container.insertBefore(wrapper, typing);
+        container.scrollTop = container.scrollHeight;
+    }
+
+    function formatAIResponse(text) {
+        // Escape HTML first
+        let html = escapeHTML(text);
+
+        // Bold: **text**
+        html = html.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+
+        // Bullet points: lines starting with • or -
+        html = html.replace(/^[•\-]\s(.+)$/gm, "<li>$1</li>");
+        html = html.replace(/((<li>.*<\/li>\n?)+)/g, "<ul>$1</ul>");
+
+        // Line breaks
+        html = html.replace(/\n/g, "<br>");
+
+        return html;
+    }
+
+    function escapeHTML(text) {
+        return text
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;");
+    }
+
+    // ── UI Helpers ─────────────────────────────────────────────────────
+    function showTyping(show) {
+        document.getElementById("typing-indicator")
+            .classList.toggle("show", show);
+        if (show) {
+            const c = document.getElementById("messages");
+            c.scrollTop = c.scrollHeight;
+        }
+    }
+
+    function setSendLoading(loading) {
+        const btn = document.getElementById("send-btn");
+        btn.disabled = loading;
+        btn.textContent = loading ? "⏳" : "➤";
+    }
+
+    function updateCounter() {
+        document.getElementById("msg-counter").textContent =
+            `${messageCount} message${messageCount !== 1 ? "s" : ""}`;
+        document.getElementById("stat-messages").textContent = messageCount;
+    }
+
+    function updateTips(tips) {
+        const list = document.getElementById("tip-list");
+        list.innerHTML = tips.map(t =>
+            `<div class="tip-item">${t}</div>`).join("");
+    }
+
+    function autoResize(el) {
+        el.style.height = "auto";
+        el.style.height = Math.min(el.scrollHeight, 120) + "px";
+    }
+
+    function handleKeyDown(e) {
+        if (e.key === "Enter" && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    }
+
+    // ── Clear Chat ─────────────────────────────────────────────────────
+    async function clearChat() {
+        if (!confirm("Clear the conversation? This cannot be undone.")) return;
+
+        // Clear UI
+        const messages = document.getElementById("messages");
+        messages.innerHTML = `
+            <div class="welcome-msg" id="welcome-screen">
+                <div class="bot-avatar-large">🤖</div>
+                <h3>Conversation Cleared</h3>
+                <p>Ready to start fresh! Select a game and ask me anything.</p>
+            </div>
+            <div class="typing-indicator" id="typing-indicator">
+                <div class="msg-avatar ai">🤖</div>
+                <div class="typing-dots">
+                    <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                </div>
+            </div>
+        `;
+
+        messageCount = 0;
+        updateCounter();
+
+        // Clear backend session
+        if (!isGuest && authToken) {
+            try {
+                await fetch(`${API_BASE}/coach/clear`, {
+                    method: "POST",
+                    headers: { "Authorization": `Bearer ${authToken}` }
+                });
+            } catch { /* silent */ }
+        }
+
+        showToast("Conversation cleared! 🔄", "info");
+    }
+
+    // ── Toast Notifications ────────────────────────────────────────────
+    function showToast(message, type = "info") {
+        const existing = document.querySelector(".toast");
+        if (existing) existing.remove();
+
+        const toast = document.createElement("div");
+        toast.className = `toast ${type}`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.style.opacity = "0";
+            toast.style.transition = "opacity 0.5s";
+            setTimeout(() => toast.remove(), 500);
+        }, 3500);
+    }
+
+    // ── Navigation ─────────────────────────────────────────────────────
+    function goHome() {
+        window.location.href = "index.html";
+    }
+
+    async function handleLogout() {
+        if (isGuest) {
+            sessionStorage.clear();
+            window.location.href = "login.html";
+            return;
+        }
+
+        try {
+            await fetch(`${API_BASE}/logout`, {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${authToken}` }
+            });
+        } catch { /* silent */ } finally {
+            localStorage.clear();
+            sessionStorage.clear();
+            window.location.href = "login.html";
+        }
+    }
+</script>
 </body>
 </html>
