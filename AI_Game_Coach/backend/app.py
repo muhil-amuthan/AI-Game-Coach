@@ -17,8 +17,14 @@ load_dotenv()
 #  App Configuration
 # ─────────────────────────────────────────────
 app = Flask(__name__)
-app.secret_key = os.getenv("SECRET_KEY", "ai-game-coach-secret-2026")
-app.config["JWT_SECRET_KEY"] = os.getenv("JWT_SECRET_KEY", "jwt-secret-key-2026")
+app.secret_key = os.getenv(
+    "SECRET_KEY",
+    "ai-game-coach-development-secret-key-change-me-2026-please",
+)
+app.config["JWT_SECRET_KEY"] = os.getenv(
+    "JWT_SECRET_KEY",
+    "jwt-development-secret-key-change-me-2026-please-use-32-bytes",
+)
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
 
 CORS(app, origins=["*"], supports_credentials=True)

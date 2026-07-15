@@ -200,13 +200,21 @@ def get_coach_response(
         # ── Generate quick tips sidebar ───────────────────────────────
         quick_tips = generate_quick_tips(game_key)
 
+        # Compute message count (handles both Gemini list-of-Content and
+        # fallback list-of-dict storage shapes).
+        history = conversation_histories.get(session_id, [])
+        if history and isinstance(history[0], dict):
+            msg_count = len(history)
+        else:
+            msg_count = len(history) // 2
+
         return {
             "success": True,
             "response": response_text,
             "game_type": game_key,
             "session_id": session_id,
             "quick_tips": quick_tips,
-            "message_count": len(conversation_histories.get(session_id, [])) // 2
+            "message_count": msg_count
         }
 
     except Exception as e:
@@ -312,13 +320,30 @@ def clear_session(session_id: str) -> bool:
 
 
 def get_session_stats(session_id: str) -> dict:
-    """Get statistics for a coaching session."""
+    """Get statistics for a coaching session.
+
+    The conversation history uses two different storage shapes:
+      * Real Gemini path: list of `protos.Content` objects (one per turn, both
+        user and model, so 2 per exchange).
+      * Fallback path: list of `{"user": ..., "bot": ...}` dicts (1 per turn).
+    We normalise both to the number of user messages.
+    """
     if session_id not in conversation_histories:
         return {"message_count": 0, "session_active": False}
 
     history = conversation_histories[session_id]
+    if not history:
+        return {"message_count": 0, "session_active": False, "history_length": 0}
+
+    if isinstance(history[0], dict):
+        # Fallback format: one dict per turn
+        message_count = len(history)
+    else:
+        # Gemini format: alternating user/model → 2 entries per turn
+        message_count = len(history) // 2
+
     return {
-        "message_count": len(history) // 2,
+        "message_count": message_count,
         "session_active": True,
         "history_length": len(history)
     }
