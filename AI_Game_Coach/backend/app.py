@@ -6,55 +6,60 @@ from flask_jwt_extended import (
 )
 from flask_bcrypt import Bcrypt
 from coach_agent import get_coach_response, clear_session, get_session_stats
+import database as db
 from dotenv import load_dotenv
 import os
 import uuid
+import re
 from datetime import timedelta, datetime
 
+# Load environment variables
 load_dotenv()
+
+# Initialize Database Schema
+db.init_db()
 
 # ─────────────────────────────────────────────
 #  App Configuration
 # ─────────────────────────────────────────────
 app = Flask(__name__)
-app.secret_key = os.getenv(
-    "SECRET_KEY",
-    "ai-game-coach-development-secret-key-change-me-2026-please",
-)
-app.config["JWT_SECRET_KEY"] = os.getenv(
-    "JWT_SECRET_KEY",
-    "jwt-development-secret-key-change-me-2026-please-use-32-bytes",
-)
+
+# Secret keys from environment with secure production fallbacks
+secret_key = os.getenv("SECRET_KEY")
+if not secret_key:
+    # In development, fall back; in production, advise setting SECRET_KEY
+    secret_key = "ai-game-coach-dev-secret-key-change-me-in-production-2026"
+app.secret_key = secret_key
+
+jwt_secret_key = os.getenv("JWT_SECRET_KEY")
+if not jwt_secret_key:
+    jwt_secret_key = "jwt-dev-secret-key-change-me-in-production-2026-32bytes"
+app.config["JWT_SECRET_KEY"] = jwt_secret_key
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=24)
 
-CORS(app, origins=["*"], supports_credentials=True)
+# ─────────────────────────────────────────────
+#  CORS Configuration
+# ─────────────────────────────────────────────
+# Configurable CORS origins for production (Vercel) & local dev
+cors_env = os.getenv("CORS_ORIGINS") or os.getenv("FRONTEND_URL")
+if cors_env and cors_env.strip() != "*":
+    allowed_origins = [o.strip() for o in cors_env.split(",") if o.strip()]
+    # Also support regex matching for Vercel preview URLs
+    allowed_origins.append(re.compile(r"^https://.*\.vercel\.app$"))
+else:
+    # Allow all origins by default (safe for API with Bearer token authentication)
+    allowed_origins = "*"
+
+CORS(
+    app,
+    resources={r"/api/*": {"origins": allowed_origins}},
+    allow_headers=["Content-Type", "Authorization"],
+    methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    supports_credentials=True
+)
+
 jwt = JWTManager(app)
 bcrypt = Bcrypt(app)
-
-# ─────────────────────────────────────────────
-#  In-Memory "Database" (replace with real DB)
-# ─────────────────────────────────────────────
-users_db = {}        # { username: { password_hash, email, created_at, stats } }
-chat_logs_db = {}    # { username: [ {game, message, response, timestamp} ] }
-
-# ─────────────────────────────────────────────
-#  Helper Functions
-# ─────────────────────────────────────────────
-def get_user(username: str) -> dict | None:
-    return users_db.get(username)
-
-
-def save_chat_log(username: str, game: str, message: str, response: str):
-    if username not in chat_logs_db:
-        chat_logs_db[username] = []
-    chat_logs_db[username].append({
-        "game": game,
-        "message": message,
-        "response": response,
-        "timestamp": datetime.now().isoformat()
-    })
-    # Keep only last 100 messages per user
-    chat_logs_db[username] = chat_logs_db[username][-100:]
 
 
 # ─────────────────────────────────────────────
@@ -62,9 +67,11 @@ def save_chat_log(username: str, game: str, message: str, response: str):
 # ─────────────────────────────────────────────
 @app.route("/api/register", methods=["POST"])
 def register():
-    """Register a new user."""
+    """Register a new user with persistent database storage."""
     try:
         data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "message": "Invalid JSON body."}), 400
 
         username = data.get("username", "").strip().lower()
         password = data.get("password", "").strip()
@@ -95,33 +102,21 @@ def register():
                 "message": "Invalid email address."
             }), 400
 
-        if username in users_db:
+        if db.get_user(username):
             return jsonify({
                 "success": False,
                 "message": "Username already taken. Please choose another."
             }), 409
 
-        # Check email uniqueness
-        for u in users_db.values():
-            if u["email"] == email:
-                return jsonify({
-                    "success": False,
-                    "message": "Email already registered."
-                }), 409
+        if db.get_user_by_email(email):
+            return jsonify({
+                "success": False,
+                "message": "Email already registered."
+            }), 409
 
         # ── Create user ───────────────────────────────────────────────
         password_hash = bcrypt.generate_password_hash(password).decode("utf-8")
-        users_db[username] = {
-            "password_hash": password_hash,
-            "email": email,
-            "created_at": datetime.now().isoformat(),
-            "stats": {
-                "sessions": 0,
-                "messages_sent": 0,
-                "favorite_game": "general",
-                "rank_points": 0
-            }
-        }
+        new_user = db.create_user(username=username, email=email, password_hash=password_hash)
 
         # Create JWT token
         access_token = create_access_token(identity=username)
@@ -147,6 +142,8 @@ def login():
     """Login an existing user."""
     try:
         data = request.get_json()
+        if not data:
+            return jsonify({"success": False, "message": "Invalid JSON body."}), 400
 
         username = data.get("username", "").strip().lower()
         password = data.get("password", "").strip()
@@ -157,7 +154,7 @@ def login():
                 "message": "Username and password are required."
             }), 400
 
-        user = get_user(username)
+        user = db.get_user(username)
 
         if not user:
             return jsonify({
@@ -172,7 +169,9 @@ def login():
             }), 401
 
         # Update session count
-        users_db[username]["stats"]["sessions"] += 1
+        db.increment_user_session(username)
+        # Fetch updated stats
+        updated_user = db.get_user(username)
 
         access_token = create_access_token(identity=username)
 
@@ -182,7 +181,7 @@ def login():
             "access_token": access_token,
             "username": username,
             "email": user["email"],
-            "stats": user["stats"]
+            "stats": updated_user["stats"] if updated_user else user["stats"]
         }), 200
 
     except Exception as e:
@@ -196,7 +195,7 @@ def login():
 @app.route("/api/logout", methods=["POST"])
 @jwt_required()
 def logout():
-    """Logout user (clear their session history)."""
+    """Logout user (clear their active session history)."""
     username = get_jwt_identity()
     clear_session(f"session_{username}")
     return jsonify({
@@ -213,12 +212,13 @@ def logout():
 def get_profile():
     """Get user profile and stats."""
     username = get_jwt_identity()
-    user = get_user(username)
+    user = db.get_user(username)
 
     if not user:
         return jsonify({"success": False, "message": "User not found."}), 404
 
-    chat_history = chat_logs_db.get(username, [])
+    recent_sessions = db.get_recent_sessions(username, limit=5)
+    all_history = db.get_user_history(username)
 
     return jsonify({
         "success": True,
@@ -226,8 +226,8 @@ def get_profile():
         "email": user["email"],
         "created_at": user["created_at"],
         "stats": user["stats"],
-        "recent_sessions": chat_history[-5:],  # Last 5 chats
-        "total_chats": len(chat_history)
+        "recent_sessions": recent_sessions,
+        "total_chats": len(all_history)
     }), 200
 
 
@@ -238,10 +238,7 @@ def get_history():
     username = get_jwt_identity()
     game_filter = request.args.get("game", None)
 
-    history = chat_logs_db.get(username, [])
-
-    if game_filter:
-        history = [h for h in history if h["game"] == game_filter]
+    history = db.get_user_history(username, game_filter=game_filter)
 
     return jsonify({
         "success": True,
@@ -260,9 +257,11 @@ def chat():
     try:
         username  = get_jwt_identity()
         data      = request.get_json()
+        if not data:
+            return jsonify({"success": False, "message": "Invalid JSON body."}), 400
 
         message   = data.get("message", "").strip()
-        game_type = data.get("game_type", "general").strip()
+        game_type = data.get("game_type", "general").strip().lower()
         session_id = f"session_{username}"
 
         if not message:
@@ -286,13 +285,10 @@ def chat():
         )
 
         if result["success"]:
-            # Update user stats
-            if username in users_db:
-                users_db[username]["stats"]["messages_sent"] += 1
-                users_db[username]["stats"]["favorite_game"] = game_type
-
-            # Save to chat log
-            save_chat_log(username, game_type, message, result["response"])
+            # Update user stats in persistent database
+            db.update_user_stats(username, game_type)
+            # Save to persistent chat log
+            db.save_chat_log(username, game_type, message, result["response"])
 
         return jsonify(result), 200
 
@@ -309,8 +305,11 @@ def chat_guest():
     """Guest chat endpoint (no auth, limited to 5 messages)."""
     try:
         data       = request.get_json()
+        if not data:
+            return jsonify({"success": False, "message": "Invalid JSON body."}), 400
+
         message    = data.get("message", "").strip()
-        game_type  = data.get("game_type", "general").strip()
+        game_type  = data.get("game_type", "general").strip().lower()
         session_id = data.get("session_id", str(uuid.uuid4()))
 
         if not message:
@@ -364,7 +363,7 @@ def clear_chat():
 def get_tips(game_type):
     """Get quick tips for a game without AI call."""
     from coach_agent import generate_quick_tips
-    tips = generate_quick_tips(game_type)
+    tips = generate_quick_tips(game_type.lower())
     return jsonify({
         "success": True,
         "game_type": game_type,
@@ -377,44 +376,39 @@ def get_tips(game_type):
 # ─────────────────────────────────────────────
 @app.route("/api/leaderboard", methods=["GET"])
 def leaderboard():
-    """Get top users by messages sent."""
-    board = []
-    for uname, udata in users_db.items():
-        board.append({
-            "username": uname,
-            "messages_sent": udata["stats"]["messages_sent"],
-            "sessions": udata["stats"]["sessions"],
-            "favorite_game": udata["stats"]["favorite_game"],
-            "rank_points": udata["stats"]["rank_points"]
-        })
-
-    board.sort(key=lambda x: x["messages_sent"], reverse=True)
-
+    """Get top users by messages sent from persistent database."""
+    board = db.get_leaderboard(limit=10)
     return jsonify({
         "success": True,
-        "leaderboard": board[:10]
+        "leaderboard": board
     }), 200
 
 
 # ─────────────────────────────────────────────
-#  Health Check
+#  Health Check Route
 # ─────────────────────────────────────────────
 @app.route("/api/health", methods=["GET"])
 def health():
+    """System health check endpoint."""
+    db_ok = db.check_db_health()
+    status_code = 200 if db_ok else 503
     return jsonify({
-        "status": "online",
+        "status": "online" if db_ok else "degraded",
         "service": "AI Game Coach API",
         "version": "2.0.0",
+        "database": "connected" if db_ok else "unavailable",
         "timestamp": datetime.now().isoformat()
-    }), 200
+    }), status_code
 
 
 # ─────────────────────────────────────────────
-#  Run
+#  Entry Point for Local Development
 # ─────────────────────────────────────────────
 if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    debug_mode = os.environ.get("FLASK_ENV", "production").lower() == "development"
     print("🎮 AI Game Coach Backend Starting...")
-    print("📡 API running at: http://localhost:5000")
+    print(f"📡 API running at: http://0.0.0.0:{port}")
     print("🔑 JWT Authentication: Enabled")
-    print("🤖 Gemini AI: Connected")
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    print("💾 Database: Persistent SQLite (initialized)")
+    app.run(debug=debug_mode, host="0.0.0.0", port=port)

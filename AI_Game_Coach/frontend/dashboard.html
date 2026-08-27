@@ -813,18 +813,10 @@
 </div>
 <!-- end main-layout -->
 
+<script src="config.js"></script>
 <script>
     // ── Config ─────────────────────────────────────────────────────────
-    // Auto-detect API base: if served on the same host as the backend, use
-    // a relative URL; otherwise fall back to localhost:5000.
-    const API_BASE = (() => {
-        // If the page is being served from a Flask-served port, talk to the
-        // same origin. Otherwise, assume the backend is on localhost:5000.
-        if (["5000", "80", "443"].includes(window.location.port)) {
-            return `${window.location.protocol}//${window.location.hostname}:5000/api`;
-        }
-        return "http://localhost:5000/api";
-    })();
+    const API_BASE = (window.CONFIG && window.CONFIG.getApiBase) ? window.CONFIG.getApiBase() : "http://localhost:5000/api";
 
     // ── State ──────────────────────────────────────────────────────────
     let authToken    = "";

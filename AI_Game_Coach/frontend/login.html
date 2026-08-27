@@ -649,8 +649,9 @@
 </div>
 <!-- end container -->
 
+<script src="config.js"></script>
 <script>
-    const API_BASE = "http://localhost:5000/api";
+    const API_BASE = (window.CONFIG && window.CONFIG.getApiBase) ? window.CONFIG.getApiBase() : "http://localhost:5000/api";
 
     // ── Particles ─────────────────────────────────────────────────────
     (function createParticles() {
@@ -755,12 +756,18 @@
 
         setLoading("login-btn", true);
 
+        // Cold start notification timer
+        const slowTimer = setTimeout(() => {
+            showAlert("login-error", "login-error-msg", "Connecting to server... (Render free tier may take ~30s on cold start)");
+        }, 3000);
+
         try {
             const res  = await fetch(`${API_BASE}/login`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password })
             });
+            clearTimeout(slowTimer);
             const data = await res.json();
 
             if (data.success) {
@@ -783,8 +790,9 @@
             }
 
         } catch (err) {
+            clearTimeout(slowTimer);
             showAlert("login-error","login-error-msg",
-                "Cannot connect to server. Is the backend running?");
+                "Cannot connect to server. If deployed on Render free tier, please wait 30s for the server to wake up and try again.");
         } finally {
             setLoading("login-btn", false);
         }
@@ -820,12 +828,17 @@
 
         setLoading("reg-btn", true);
 
+        const slowTimer = setTimeout(() => {
+            showAlert("reg-error", "reg-error-msg", "Connecting to server... (Render free tier may take ~30s on cold start)");
+        }, 3000);
+
         try {
             const res  = await fetch(`${API_BASE}/register`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, email, password })
             });
+            clearTimeout(slowTimer);
             const data = await res.json();
 
             if (data.success) {
@@ -847,8 +860,9 @@
             }
 
         } catch (err) {
+            clearTimeout(slowTimer);
             showAlert("reg-error","reg-error-msg",
-                "Cannot connect to server. Is the backend running?");
+                "Cannot connect to server. If deployed on Render free tier, please wait 30s for the server to wake up and try again.");
         } finally {
             setLoading("reg-btn", false);
         }

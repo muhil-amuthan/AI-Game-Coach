@@ -1,4 +1,4 @@
-# Python
+# Python & Virtual Environments
 __pycache__/
 *.pyc
 *.pyo
@@ -9,16 +9,27 @@ env/
 
 # Environment files (keep .env.example tracked)
 .env
-.env.local
+.env.*
+!.env.example
 
-# OS / editor
+# SQLite Database & Storage
+*.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Vercel & Node
+.vercel/
+node_modules/
+
+# OS / Editor
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
 *.swp
 
-# Build / test artifacts
+# Build / Test Artifacts
 .pytest_cache/
 .coverage
 htmlcov/
