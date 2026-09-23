@@ -161,3 +161,4 @@ const CONFIG = (() => {
 
 // Attach globally
 window.CONFIG = CONFIG;
+window.API_BASE_URL = "https://ai-game-coach.onrender.com";
