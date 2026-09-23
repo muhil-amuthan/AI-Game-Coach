@@ -100,7 +100,112 @@ python3 -m http.server 8080
 ```
 Now visit **http://localhost:8080** in your browser.
 
-> The login/dashboard pages default to `http://localhost:5000/api` for the API. If you host the frontend on a different origin, edit the `API_BASE` constant at the top of each page's `<script>` block, or put both behind a reverse proxy.
+> **Frontend API Connection:** The frontend automatically connects to `http://localhost:5000/api` during local development, and to your deployed Render URL in production. You can also click **⚙️ Configure API URL** anytime in the login/dashboard UI to switch environments on the fly.
+
+---
+
+## 🌐 Deploy to Render (Backend) & Vercel (Frontend)
+
+This repository is pre-configured with **`render.yaml`** (for Render Blueprints) and **`vercel.json`** (for Vercel Edge Hosting).
+
+```
+                      ┌──────────────────────────────────────┐
+                      │          Vercel (Frontend)           │
+                      │  https://your-game-coach.vercel.app  │
+                      └──────────────────┬───────────────────┘
+                                         │
+                                         │ HTTPS / REST API
+                                         ▼
+                      ┌──────────────────────────────────────┐
+                      │           Render (Backend)           │
+                      │ https://ai-game-coach.onrender.com   │
+                      │            [Flask + JWT]             │
+                      └──────────────────┬───────────────────┘
+                                         │
+                                         ▼
+                                  Google Gemini API
+```
+
+---
+
+### Step 1: Deploy the Backend on Render
+
+You can deploy the backend using Render's Blueprint or as a standard Web Service.
+
+#### Option A: 1-Click Blueprint (Recommended)
+1. Push this repository to your GitHub account.
+2. Log in to [Render Dashboard](https://dashboard.render.com/).
+3. Click **New +** → **Blueprint**.
+4. Connect your GitHub repository.
+5. Render detects `render.yaml` automatically and configures:
+   - **Runtime:** Python 3.11
+   - **Plan:** Free
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120`
+   - **Health Check Path:** `/api/health`
+6. Under **Environment Variables**, provide your `GEMINI_API_KEY` (optional, for Gemini AI) and your `FRONTEND_URL` (your Vercel URL once created).
+7. Click **Apply**.
+8. Once deployed, copy your backend URL (e.g., `https://ai-game-coach-backend-xxxx.onrender.com`).
+9. Verify by opening `https://<your-render-url>/api/health` in your browser. It should return `{"status":"online", ...}`.
+
+#### Option B: Manual Web Service
+1. In Render Dashboard, click **New +** → **Web Service**.
+2. Select your repository.
+3. Configure the settings:
+   - **Root Directory:** `AI_Game_Coach/backend`
+   - **Runtime:** `Python 3`
+   - **Build Command:** `pip install -r requirements.txt`
+   - **Start Command:** `gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120`
+   - **Plan:** Free
+4. Under **Advanced** → **Health Check Path**, enter: `/api/health`
+5. Under **Environment Variables**, add:
+   - `FLASK_ENV` = `production`
+   - `SECRET_KEY` = `(generate a random 64-char string)`
+   - `JWT_SECRET_KEY` = `(generate a random 64-char string)`
+   - `CORS_ORIGINS` = `*`
+   - `GEMINI_API_KEY` = `(your Google Gemini API key)`
+6. Click **Create Web Service**.
+
+> **Note on Render Free Tier:** Render spins down free services after 15 minutes of inactivity. When a request arrives, it may take 30–50 seconds to wake up (cold start). The frontend has built-in detection and status messages to inform the user during wake-ups.
+
+---
+
+### Step 2: Deploy the Frontend on Vercel
+
+1. Log in to [Vercel](https://vercel.com/) and click **Add New...** → **Project**.
+2. Import your GitHub repository (`AI-Game-Coach`).
+3. In **Project Settings**:
+   - **Framework Preset:** Other
+   - **Root Directory:** Leave as `./` (or select `AI_Game_Coach/frontend` — both work with the included `vercel.json` configs).
+4. Click **Deploy**.
+5. Once deployment completes, Vercel gives you a live production URL (e.g., `https://ai-game-coach-xxxx.vercel.app`).
+
+---
+
+### Step 3: Connect Frontend to Backend
+
+You have two easy ways to point the frontend to your Render backend:
+
+#### Method 1: Instant In-Browser Setup (Zero Code Change)
+1. Open your live Vercel URL in your browser.
+2. Click **Login** or **Dashboard**.
+3. Click the **⚙️ Configure API URL** link at the bottom of the login card (or **⚙️ API Settings** on the dashboard sidebar).
+4. Paste your Render backend URL (e.g., `https://ai-game-coach-backend-xxxx.onrender.com`).
+5. Click **OK**. The frontend saves this to your browser storage and instantly connects!
+
+#### Method 2: Default in Code (For All Users)
+1. Open `AI_Game_Coach/frontend/config.js`.
+2. Update line 10 with your live Render backend URL:
+   ```javascript
+   const DEFAULT_PROD_API = "https://<your-render-service>.onrender.com/api";
+   ```
+3. Commit and push to GitHub:
+   ```bash
+   git add AI_Game_Coach/frontend/config.js
+   git commit -m "chore: set production Render backend URL"
+   git push origin main
+   ```
+4. Vercel will automatically redeploy with the updated URL.
 
 ---
 

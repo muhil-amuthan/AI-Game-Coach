@@ -63,6 +63,26 @@ bcrypt = Bcrypt(app)
 
 
 # ─────────────────────────────────────────────
+#  Root & Health Routes
+# ─────────────────────────────────────────────
+@app.route("/", methods=["GET"])
+def index():
+    """Root endpoint to verify API server is online."""
+    return jsonify({
+        "status": "online",
+        "service": "AI Game Coach Backend API",
+        "version": "2.0.0",
+        "message": "Backend is running successfully! Access API endpoints under /api/*",
+        "endpoints": {
+            "health": "/api/health",
+            "leaderboard": "/api/leaderboard",
+            "login": "/api/login",
+            "register": "/api/register"
+        }
+    }), 200
+
+
+# ─────────────────────────────────────────────
 #  Auth Routes
 # ─────────────────────────────────────────────
 @app.route("/api/register", methods=["POST"])

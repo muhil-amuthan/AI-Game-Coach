@@ -2,6 +2,7 @@ services:
   - type: web
     name: ai-game-coach-backend
     runtime: python
+    plan: free
     rootDir: AI_Game_Coach/backend
     buildCommand: pip install -r requirements.txt
     startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120
@@ -9,7 +10,7 @@ services:
     autoDeploy: true
     envVars:
       - key: PYTHON_VERSION
-        value: 3.10.14
+        value: 3.11.9
       - key: FLASK_ENV
         value: production
       - key: SECRET_KEY
@@ -22,3 +23,5 @@ services:
         sync: false
       - key: GEMINI_API_KEY
         sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.6-flash

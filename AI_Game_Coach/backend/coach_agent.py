@@ -164,7 +164,7 @@ def get_coach_response(
         if _USE_GENAI and genai is not None:
             # ── Initialize model ──────────────────────────────────
             model = genai.GenerativeModel(
-                model_name="gemini-1.5-flash",
+                model_name=os.getenv("GEMINI_MODEL", "gemini-3.6-flash"),
                 system_instruction=system_prompt
             )
 

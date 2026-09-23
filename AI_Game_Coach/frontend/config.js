@@ -6,8 +6,7 @@
 const CONFIG = (() => {
     // ── Default Production Backend URL ──────────────────────────────
     // Replace with your deployed Render service URL:
-    // e.g., "https://<your-service-name>.onrender.com/api"
-    const DEFAULT_PROD_API = "https://ai-game-coach-backend.onrender.com/api";
+    const DEFAULT_PROD_API = "https://ai-game-coach.onrender.com/api";
 
     /**
      * Resolve the active API base URL.
@@ -109,8 +108,52 @@ const CONFIG = (() => {
         }
     }
 
+    /**
+     * Explicitly update the backend API URL and store in localStorage.
+     * @param {string} url - e.g. "https://my-backend.onrender.com" or "https://my-backend.onrender.com/api"
+     */
+    function setApiBase(url) {
+        if (!url) {
+            localStorage.removeItem("AI_COACH_API_BASE");
+            return getApiBase();
+        }
+        let clean = url.trim().replace(/\/+$/, "");
+        if (!clean.endsWith("/api")) {
+            clean += "/api";
+        }
+        localStorage.setItem("AI_COACH_API_BASE", clean);
+        return clean;
+    }
+
+    /**
+     * Clear custom API base URL override and reset to default.
+     */
+    function resetApiBase() {
+        localStorage.removeItem("AI_COACH_API_BASE");
+        return getApiBase();
+    }
+
+    /**
+     * Interactive prompt in browser to set or change backend URL.
+     */
+    function promptSetApiBase() {
+        const current = getApiBase();
+        const input = window.prompt(
+            "Enter your deployed Render backend URL (e.g., https://your-backend.onrender.com):",
+            current
+        );
+        if (input !== null) {
+            const updated = setApiBase(input);
+            alert(`Backend API URL updated to:\n${updated}\n\nReloading page...`);
+            window.location.reload();
+        }
+    }
+
     return {
         getApiBase,
+        setApiBase,
+        resetApiBase,
+        promptSetApiBase,
         checkBackendHealth,
         DEFAULT_PROD_API
     };

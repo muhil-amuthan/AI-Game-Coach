@@ -642,8 +642,10 @@
     </div>
     <!-- end card -->
 
-    <div class="back-home">
+    <div class="back-home" style="display:flex; justify-content:center; align-items:center; gap:16px; flex-wrap:wrap;">
         <a href="index.html">← Back to Home</a>
+        <span style="color:rgba(255,255,255,0.2)">|</span>
+        <a href="javascript:void(0)" onclick="CONFIG.promptSetApiBase()" style="color:rgba(255,255,255,0.5); text-decoration:none; font-size:13px;" title="Configure Render backend URL">⚙️ Configure API URL</a>
     </div>
 
 </div>
@@ -792,7 +794,7 @@
         } catch (err) {
             clearTimeout(slowTimer);
             showAlert("login-error","login-error-msg",
-                "Cannot connect to server. If deployed on Render free tier, please wait 30s for the server to wake up and try again.");
+                "Cannot connect to server. Render free tier may take ~30-50s to wake up on cold start. If your backend URL changed, click 'Configure API URL' below.");
         } finally {
             setLoading("login-btn", false);
         }
@@ -862,7 +864,7 @@
         } catch (err) {
             clearTimeout(slowTimer);
             showAlert("reg-error","reg-error-msg",
-                "Cannot connect to server. If deployed on Render free tier, please wait 30s for the server to wake up and try again.");
+                "Cannot connect to server. Render free tier may take ~30-50s to wake up on cold start. If your backend URL changed, click 'Configure API URL' below.");
         } finally {
             setLoading("reg-btn", false);
         }
