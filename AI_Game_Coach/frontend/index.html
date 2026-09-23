@@ -841,15 +841,194 @@
         ::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 3px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--neon-pink); }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.8rem; }
-            .hero-subtitle { font-size: 1.2rem; }
-            .nav-links { display: none; }
-            .navbar { padding: 1rem; }
-            .stats-bar { gap: 1.5rem; }
-            .section { padding: 3rem 1rem; }
-            .cta-banner h2 { font-size: 1.5rem; }
+        /* ── Mobile Hamburger Toggle ──────────── */
+        .nav-toggle-btn {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 243, 255, 0.08);
+            border: 1px solid var(--neon-cyan);
+            border-radius: 8px;
+            color: var(--neon-cyan);
+            font-size: 1.35rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .nav-toggle-btn:hover {
+            background: rgba(0, 243, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        }
+
+        /* ── Comprehensive Responsive Media Queries ──── */
+        @media (max-width: 900px) {
+            .navbar {
+                padding: 0.9rem 1.5rem;
+            }
+            .nav-toggle-btn {
+                display: flex;
+            }
+            .nav-links {
+                position: fixed;
+                top: 66px;
+                left: 0;
+                right: 0;
+                background: rgba(10, 10, 15, 0.97);
+                backdrop-filter: blur(20px);
+                border-bottom: 1px solid var(--border-glow);
+                padding: 1.5rem 1rem;
+                flex-direction: column;
+                gap: 1.2rem;
+                align-items: center;
+                text-align: center;
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.8);
+                transform: translateY(-150%);
+                opacity: 0;
+                pointer-events: none;
+                transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+                z-index: 999;
+            }
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                pointer-events: auto;
+            }
+            .nav-links a {
+                font-size: 1.15rem;
+                padding: 0.4rem 1rem;
+                display: block;
+                width: 100%;
+            }
+            .stats-bar {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.2rem;
+                padding: 1.5rem;
+                margin: 2rem 1.5rem;
+            }
+            .features-grid, .game-grid, .testimonials-grid {
+                grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+                gap: 1.2rem;
+            }
+            .steps-container {
+                gap: 1.5rem;
+            }
+            .step {
+                max-width: 220px;
+            }
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .navbar {
+                padding: 0.75rem 1rem;
+            }
+            .logo {
+                font-size: 1.15rem;
+            }
+            .nav-cta {
+                padding: 0.45rem 0.9rem;
+                font-size: 0.8rem;
+            }
+            .hero {
+                padding: 3rem 1rem 2rem;
+            }
+            .hero-badge {
+                font-size: 0.75rem;
+                padding: 0.3rem 0.8rem;
+            }
+            .hero h1 {
+                font-size: 2.3rem;
+                letter-spacing: 1px;
+            }
+            .hero-subtitle {
+                font-size: 1.05rem;
+                letter-spacing: 1px;
+            }
+            .hero-desc {
+                font-size: 0.92rem;
+                line-height: 1.5;
+                padding: 0 0.5rem;
+            }
+            .game-icons {
+                gap: 0.5rem;
+            }
+            .game-icon {
+                font-size: 1.6rem;
+                padding: 0.3rem;
+            }
+            .cta-group {
+                flex-direction: column;
+                width: 100%;
+                max-width: 320px;
+                margin: 0 auto;
+                gap: 0.75rem;
+            }
+            .neon-btn {
+                width: 100%;
+                padding: 0.85rem 1.2rem;
+                font-size: 0.9rem;
+                justify-content: center;
+                text-align: center;
+            }
+            .stats-bar {
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+                padding: 1.2rem 0.8rem;
+                margin: 1.5rem 0.8rem;
+            }
+            .stat-value {
+                font-size: 1.8rem;
+            }
+            .stat-label {
+                font-size: 0.78rem;
+            }
+            .section {
+                padding: 2.5rem 1rem;
+            }
+            .section-title {
+                font-size: 1.5rem;
+                margin-bottom: 2rem;
+            }
+            .game-grid, .features-grid, .testimonials-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            .game-card, .feature-card, .testimonial {
+                padding: 1.4rem 1.1rem;
+            }
+            .steps-container {
+                flex-direction: column;
+                align-items: center;
+                gap: 2rem;
+            }
+            .step {
+                max-width: 100%;
+                width: 100%;
+            }
+            .cta-banner {
+                padding: 2rem 1.2rem;
+                margin: 0 0.5rem;
+            }
+            .cta-banner h2 {
+                font-size: 1.45rem;
+            }
+            .cta-banner p {
+                font-size: 0.9rem;
+            }
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 1.8rem;
+                text-align: center;
+            }
+            .social-links {
+                justify-content: center;
+            }
         }
     </style>
 </head>
@@ -868,15 +1047,18 @@
 
     <!-- Navigation -->
     <nav class="navbar">
-        <div class="logo">🎮 AI COACH</div>
-        <ul class="nav-links">
-            <li><a href="#games">Games</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#how">How It Works</a></li>
-            <li><a href="#testimonials">Reviews</a></li>
+        <a href="index.html" class="logo" style="text-decoration:none;">🎮 AI COACH</a>
+        <ul class="nav-links" id="nav-links">
+            <li><a href="#games" onclick="closeNavMenu()">Games</a></li>
+            <li><a href="#features" onclick="closeNavMenu()">Features</a></li>
+            <li><a href="#how" onclick="closeNavMenu()">How It Works</a></li>
+            <li><a href="#testimonials" onclick="closeNavMenu()">Reviews</a></li>
             <li><a href="login.html">Login</a></li>
         </ul>
-        <a href="dashboard.html" class="nav-cta">DASHBOARD →</a>
+        <div style="display:flex; align-items:center; gap:0.6rem;">
+            <a href="dashboard.html" class="nav-cta">DASHBOARD →</a>
+            <button class="nav-toggle-btn" id="nav-toggle" onclick="toggleNavMenu()" aria-label="Toggle navigation">☰</button>
+        </div>
     </nav>
 
     <!-- Hero Section -->
@@ -1140,6 +1322,30 @@
 
     <script src="config.js"></script>
     <script>
+        // Mobile Navigation Toggle
+        function toggleNavMenu() {
+            const nav = document.getElementById("nav-links");
+            const btn = document.getElementById("nav-toggle");
+            if (!nav) return;
+            const active = nav.classList.toggle("active");
+            if (btn) btn.textContent = active ? "✕" : "☰";
+        }
+
+        function closeNavMenu() {
+            const nav = document.getElementById("nav-links");
+            const btn = document.getElementById("nav-toggle");
+            if (nav) nav.classList.remove("active");
+            if (btn) btn.textContent = "☰";
+        }
+
+        document.addEventListener("click", (e) => {
+            const nav = document.getElementById("nav-links");
+            const btn = document.getElementById("nav-toggle");
+            if (nav && nav.classList.contains("active") && !nav.contains(e.target) && !btn.contains(e.target)) {
+                closeNavMenu();
+            }
+        });
+
         // Smooth scroll for nav links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {

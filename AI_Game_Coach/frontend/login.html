@@ -476,6 +476,88 @@
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: var(--dark-bg); }
         ::-webkit-scrollbar-thumb { background: var(--neon-cyan); border-radius: 3px; }
+
+        /* ── Responsive Mobile & Tablet Design ────────── */
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem 0.5rem;
+                align-items: flex-start;
+            }
+            .login-container {
+                padding: 0.5rem;
+                margin-top: 1rem;
+                margin-bottom: 2rem;
+            }
+            .login-header {
+                margin-bottom: 1.4rem;
+            }
+            .login-logo {
+                font-size: 1.65rem;
+            }
+            .login-subtitle {
+                font-size: 0.85rem;
+                letter-spacing: 1px;
+            }
+            .login-card {
+                padding: 1.6rem 1.15rem;
+                border-radius: 16px;
+            }
+            .tab-group {
+                margin-bottom: 1.4rem;
+            }
+            .tab-btn {
+                padding: 0.75rem 0.4rem;
+                font-size: 0.8rem;
+                letter-spacing: 0.5px;
+                min-height: 42px;
+            }
+            .form-group {
+                margin-bottom: 1.2rem;
+            }
+            .form-input {
+                font-size: 16px; /* Prevents auto-zoom on iOS */
+                padding: 0.85rem 0.85rem 0.85rem 2.6rem;
+            }
+            .input-icon {
+                left: 0.85rem;
+                font-size: 0.95rem;
+            }
+            .toggle-password {
+                right: 0.85rem;
+                padding: 6px;
+            }
+            .submit-btn {
+                padding: 0.95rem;
+                font-size: 0.9rem;
+                min-height: 48px;
+            }
+            .guest-btn {
+                padding: 0.85rem;
+                font-size: 0.85rem;
+                min-height: 46px;
+            }
+            .game-strip {
+                margin-top: 1.2rem;
+                font-size: 1.3rem;
+                gap: 0.8rem;
+            }
+            .back-home {
+                font-size: 0.82rem;
+                gap: 10px !important;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .login-card {
+                padding: 1.25rem 0.85rem;
+            }
+            .login-logo {
+                font-size: 1.45rem;
+            }
+            .tab-btn {
+                font-size: 0.72rem;
+            }
+        }
     </style>
 </head>
 <body>
